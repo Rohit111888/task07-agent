@@ -1,0 +1,300 @@
+brand,model,generation,year,fuel_type,transmission,engine_cc,horsepower,top_speed,weight,fuel_consumption,price_eur,scraped_at,price_usd
+Porsche,911,Porsche 911 Carrera T Cabriolet,2024,Petrol,Automatic,3996.0,394.0,293.0,1555.0,10.7,231378,2026-07-02 12:07:04,270712.26
+BMW,8 Series,BMW 8-Series M8 Competition Coupé,2018,Petrol,Automatic,4395.0,625.0,250.0,1875.0,10.5,231573,2026-07-02 12:07:03,270940.41
+Mercedes-Benz,S Class,Mercedes-Benz S-Class S 63 AMG 4MATIC Long,2017,Petrol,Automatic,2999.0,612.0,250.0,1970.0,11.2,231577,2026-07-02 12:07:01,270945.09
+Porsche,911,Porsche 911 Carrera GTS Cabriolet,2019,Petrol,Automatic,3996.0,480.0,309.0,1590.0,10.9,231783,2026-07-02 12:06:58,271186.11
+Porsche,911,Porsche 911 Carrera Turbo Cabriolet,2015,Petrol,Automatic,3996.0,540.0,320.0,1640.0,9.3,231828,2026-07-02 12:06:57,271238.76
+Porsche,Panamera,Porsche Panamera Turbo Executive,2016,Petrol,Automatic,2894.0,550.0,306.0,2075.0,10.6,226863,2026-07-02 12:08:00,265429.71
+Toyota,Yaris,Toyota Yaris 1.5 Hybrid Energy Plus,2017,Hybrid,Automatic,1490.0,75.0,165.0,1060.0,3.3,232395,2026-07-02 12:06:53,271902.15
+Land Rover,Range Rover,Land Rover Range Rover 5.0 V8 Supercharged Autobiography LWB,2017,Petrol,Automatic,5000.0,525.0,225.0,2383.0,12.8,232664,2026-07-02 12:06:51,272216.88
+BMW,8 Series,BMW 8-Series M8 Gran Coupé,2022,Petrol,Automatic,4395.0,600.0,250.0,1970.0,10.7,232722,2026-07-02 12:06:47,272284.74
+Ferrari,Purosangue,Ferrari Purosangue Purosangue,2023,Petrol,Automatic,6496.0,780.0,310.0,2033.0,6.1,600084,2026-07-02 11:51:22,702098.28
+Ferrari,812,Ferrari 812 Competizione,2020,Petrol,Automatic,6496.0,830.0,340.0,1487.0,14.9,623667,2026-07-02 11:51:14,729690.39
+Rolls-Royce,Phantom,Rolls-Royce Phantom EWB,2018,Petrol,Automatic,6749.0,571.0,250.0,2610.0,13.9,650890,2026-07-02 11:51:10,761541.3
+Ferrari,812,Ferrari 812 Competizione A,2020,Petrol,Automatic,6496.0,830.0,340.0,1487.0,14.9,710440,2026-07-02 11:51:07,831214.8
+Land Rover,Range Rover,Land Rover Range Rover D350 Autobiography,2022,Petrol,Automatic,2997.0,350.0,234.0,2505.0,7.6,231012,2026-07-02 12:07:08,270284.04
+Aston Martin,Dbs,Aston Martin DBS 5.2 V12 Superleggera,2019,Petrol,Automatic,5204.0,725.0,340.0,1693.0,12.4,374886,2026-07-02 11:53:24,438616.62
+Porsche,911,Porsche 911 Turbo S 50 Years Coupé,2019,Petrol,Automatic,3996.0,650.0,330.0,1615.0,11.2,375570,2026-07-02 11:53:22,439416.9
+Bentley,Flying Spur,Bentley Flying Spur 6.0 W12,2020,Petrol,Automatic,3996.0,635.0,333.0,2337.0,14.0,383007,2026-07-02 11:53:12,448118.19
+Bentley,Bentayga,Bentley Bentayga EWB V8 Azure,2020,Petrol,Automatic,3996.0,550.0,290.0,2414.0,12.0,385621,2026-07-02 11:53:10,451176.57
+Ferrari,488,Ferrari 488 Spider Pista,2015,Petrol,Automatic,3902.0,670.0,325.0,1420.0,11.4,389635,2026-07-02 11:53:05,455872.95
+Bentley,Bentayga,Bentley Bentayga W12 Speed,2020,Petrol,Automatic,3996.0,635.0,306.0,2408.0,14.3,390000,2026-07-02 11:53:03,456300.0
+Porsche,Cayenne,Porsche Cayenne Turbo,2017,Petrol,Automatic,2995.0,550.0,286.0,2150.0,11.4,236517,2026-07-02 12:05:45,276724.89
+Audi,R8,Audi R8 Coupé V10 quattro,2016,Petrol,Automatic,5204.0,540.0,320.0,1570.0,11.4,237350,2026-07-02 12:05:38,277699.5
+Porsche,911,Porsche 911 Carrera S Cabriolet,2024,Petrol,Automatic,3996.0,480.0,308.0,1600.0,10.5,237478,2026-07-02 12:05:34,277849.26
+Porsche,Cayenne,Porsche Cayenne GTS Coupé,2023,Petrol,Automatic,2995.0,500.0,275.0,2195.0,12.6,237610,2026-07-02 12:05:32,278003.7
+Land Rover,Range Rover,Land Rover Range Rover P530 First Edition,2022,Petrol,Automatic,4395.0,530.0,250.0,2585.0,11.7,239361,2026-07-02 12:05:22,280052.37
+Maserati,Grancabrio,Maserati GranCabrio Sport,2018,Petrol,Automatic,4691.0,460.0,288.0,1880.0,14.5,239368,2026-07-02 12:05:20,280060.56
+Aston Martin,Dbs,Aston Martin DBS Volante 5.2 V12 Superleggera,2020,Petrol,Automatic,5204.0,725.0,340.0,1863.0,12.4,409938,2026-07-02 11:52:41,479627.46
+McLaren,765Lt,McLaren 765LT 765LT,2020,Petrol,Automatic,3994.0,765.0,330.0,1229.0,13.0,412000,2026-07-02 11:52:40,482040.0
+Porsche,911,Porsche 911 Carrera S/T Coupé,2019,Petrol,Automatic,3996.0,525.0,300.0,1355.0,13.8,422183,2026-07-02 11:52:33,493954.11
+Bentley,Mulsanne,Bentley Mulsanne Speed,2017,Petrol,Automatic,6752.0,537.0,305.0,2585.0,15.0,425477,2026-07-02 11:52:31,497808.09
+Bentley,Bentayga,Bentley Bentayga EWB V8 Mulliner,2020,Petrol,Automatic,3996.0,550.0,290.0,2414.0,12.0,425887,2026-07-02 11:52:30,498287.79
+Bentley,Continental,Bentley Continental GTC 6.0 W12 Speed,2019,Petrol,Automatic,3996.0,659.0,335.0,2336.0,13.7,426731,2026-07-02 11:52:28,499275.27
+Rolls-Royce,Cullinan,Rolls-Royce Cullinan Cullinan,2019,Petrol,Automatic,6749.0,571.0,250.0,2660.0,15.0,432485,2026-07-02 11:52:22,506007.45
+Rolls-Royce,Ghost,Rolls-Royce Ghost EWB,2020,Petrol,Automatic,6749.0,571.0,250.0,2530.0,15.3,438881,2026-07-02 11:52:19,513490.77
+Bentley,Continental,Bentley Continental GT 6.0 W12 Speed,2018,Petrol,Automatic,3996.0,659.0,335.0,2173.0,13.5,392201,2026-07-02 11:53:01,458875.17
+McLaren,750S,McLaren 750S Spider,2023,Petrol,Automatic,3994.0,750.0,332.0,1438.0,12.2,393074,2026-07-02 11:52:59,459896.58
+Ferrari,812,Ferrari 812 Superfast,2017,Petrol,Automatic,6496.0,800.0,340.0,1525.0,14.9,393865,2026-07-02 11:52:57,460822.05
+Bentley,Mulsanne,Bentley Mulsanne Mulsanne,2017,Petrol,Automatic,6752.0,512.0,296.0,2585.0,15.0,398300,2026-07-02 11:52:55,466011.0
+Rolls-Royce,Ghost,Rolls-Royce Ghost Ghost,2020,Petrol,Automatic,6749.0,571.0,250.0,2490.0,15.2,400939,2026-07-02 11:52:51,469098.63
+Mercedes-Benz,G Class,Mercedes-Benz G-Class G 65 AMG,2015,Petrol,Automatic,3982.0,630.0,230.0,2480.0,17.0,402032,2026-07-02 11:52:48,470377.44
+Bentley,Bentayga,Bentley Bentayga EWB V8,2020,Petrol,Automatic,3996.0,550.0,290.0,2414.0,12.0,352473,2026-07-02 11:54:19,412393.41
+Porsche,911,Porsche 911 GT2 RS,2015,Petrol,Automatic,3996.0,700.0,340.0,1445.0,11.8,353285,2026-07-02 11:54:14,413343.45
+Porsche,911,Porsche 911 Turbo S Coupé,2024,Petrol,Automatic,3996.0,640.0,322.0,1700.0,11.5,355078,2026-07-02 11:54:12,415441.26
+McLaren,750S,McLaren 750S 750S,2023,Petrol,Automatic,3994.0,750.0,332.0,1389.0,12.2,358174,2026-07-02 11:54:04,419063.58
+Ferrari,488,Ferrari 488 GTB Pista,2015,Petrol,Automatic,3902.0,670.0,330.0,1370.0,11.4,359484,2026-07-02 11:53:59,420596.28
+Maserati,Mc20,Maserati MC20 Cielo,2023,Petrol,Automatic,3000.0,630.0,320.0,1540.0,11.5,360450,2026-07-02 11:53:57,421726.5
+Mercedes-Benz,S Class,Mercedes-Benz S-Class Maybach S 680 4MATIC,2021,Petrol,Automatic,2999.0,612.0,250.0,2200.0,13.4,361852,2026-07-02 11:53:54,423366.84
+Porsche,911,Porsche 911 Carrera GT3 RS Coupé,2019,Petrol,Automatic,3996.0,525.0,296.0,1425.0,13.4,363080,2026-07-02 11:53:51,424803.6
+Bentley,Bentayga,Bentley Bentayga V8 Azure,2020,Petrol,Automatic,3996.0,550.0,290.0,2316.0,12.0,366200,2026-07-02 11:53:42,428454.0
+Lamborghini,Urus,Lamborghini Urus Performante,2018,Petrol,Automatic,3996.0,666.0,306.0,2150.0,14.1,370603,2026-07-02 11:53:36,433605.51
+Porsche,911,Porsche 911 Carrera Turbo S Cabriolet,2024,Petrol,Automatic,3996.0,640.0,322.0,1785.0,11.6,370677,2026-07-02 11:53:35,433692.09
+Bentley,Continental,Bentley Continental GTC Mulliner,2024,Hybrid,Automatic,3996.0,600.0,285.0,2536.0,9.0,371053,2026-07-02 11:53:33,434132.01
+Bentley,Bentayga,Bentley Bentayga V8 Speed,2020,Petrol,Automatic,3996.0,550.0,290.0,2288.0,12.0,372777,2026-07-02 11:53:28,436149.09
+Mercedes-Benz,S Class,Mercedes-Benz S-Class S 65 AMG Cabriolet,2016,Petrol,Automatic,2999.0,630.0,250.0,2155.0,12.0,330033,2026-07-02 11:55:21,386138.61
+Bentley,Continental,Bentley Continental GTC Azure,2024,Hybrid,Automatic,3996.0,519.0,270.0,2528.0,9.0,331296,2026-07-02 11:55:19,387616.32
+Ferrari,296,Ferrari 296 GTS,2023,Petrol,Automatic,2992.0,663.0,330.0,1470.0,6.4,332281,2026-07-02 11:55:16,388768.77
+Mercedes-Benz,S Class,Mercedes-Benz S-Class S 65 AMG Long,2017,Petrol,Automatic,2999.0,630.0,250.0,2150.0,14.2,332396,2026-07-02 11:55:14,388903.32
+Ferrari,F8,Ferrari F8 Spider,2020,Petrol,Automatic,3902.0,720.0,340.0,1400.0,13.0,333169,2026-07-02 11:55:07,389807.73
+Mercedes-Benz,S Class,Mercedes-Benz S-Class S 65 AMG Coupé,2018,Petrol,Automatic,2999.0,630.0,250.0,2085.0,14.2,339051,2026-07-02 11:55:01,396689.67
+Mercedes-Benz,Amg Gt,Mercedes-Benz AMG GT 63 Pro 4MATIC+,2023,Petrol,Automatic,3982.0,612.0,317.0,1850.0,14.0,340224,2026-07-02 11:54:58,398062.08
+Bentley,Continental,Bentley Continental GTC 4.0 V8,2019,Petrol,Automatic,3996.0,550.0,318.0,2235.0,11.7,340468,2026-07-02 11:54:56,398347.56
+Bentley,Continental,Bentley Continental GT Mulliner,2024,Hybrid,Automatic,3996.0,600.0,335.0,2359.0,8.9,341766,2026-07-02 11:54:52,399866.22
+Lamborghini,Urus,Lamborghini Urus S,2018,Petrol,Automatic,3996.0,666.0,305.0,2197.0,14.1,342279,2026-07-02 11:54:51,400466.43
+Land Rover,Range Rover,Land Rover Range Rover P615 SV Black,2022,Petrol,Automatic,4395.0,615.0,261.0,2784.0,11.8,342522,2026-07-02 11:54:37,400750.74
+Bentley,Bentayga,Bentley Bentayga V8 S,2020,Petrol,Automatic,3996.0,550.0,290.0,2288.0,12.0,343624,2026-07-02 11:54:36,402040.08
+Porsche,911,Porsche 911 Turbo S Cabriolet,2019,Petrol,Automatic,3996.0,650.0,330.0,1685.0,11.3,343883,2026-07-02 11:54:34,402343.11
+McLaren,720S,McLaren 720S Spider,2020,Petrol,Automatic,3994.0,720.0,341.0,1368.0,10.8,344185,2026-07-02 11:54:31,402696.45
+Mercedes-Benz,S Class,Mercedes-Benz S-Class S 65 AMG Cabriolet,2018,Petrol,Automatic,2999.0,630.0,250.0,2155.0,14.2,347279,2026-07-02 11:54:27,406316.43
+Bentley,Continental,Bentley Continental GT Speed,2024,Hybrid,Automatic,3996.0,600.0,335.0,2359.0,8.9,316651,2026-07-02 11:56:22,370481.67
+Mercedes-Benz,G Class,Mercedes-Benz G-Class G 63 AMG,2024,Petrol,Automatic,3982.0,585.0,220.0,2540.0,14.8,317104,2026-07-02 11:56:20,371011.68
+McLaren,720S,McLaren 720S 720S,2017,Petrol,Automatic,3994.0,720.0,341.0,1319.0,10.7,318185,2026-07-02 11:56:18,372276.45
+Mercedes-Benz,Sl,Mercedes-Benz SL 65 AMG,2016,Petrol,Automatic,5980.0,630.0,250.0,1850.0,11.9,319069,2026-07-02 11:56:13,373310.73
+Mercedes-Benz,G Class,Mercedes-Benz G-Class G 500 4x4,2015,Petrol,Automatic,3982.0,422.0,210.0,2921.0,13.8,319377,2026-07-02 11:56:11,373671.09
+Maserati,Mc20,Maserati MC20 MC20,2021,Petrol,Automatic,3000.0,630.0,325.0,1450.0,11.6,322700,2026-07-02 11:56:05,377559.0
+Bentley,Bentayga,Bentley Bentayga V8,2020,Petrol,Automatic,3996.0,550.0,290.0,2316.0,12.0,322782,2026-07-02 11:56:03,377654.94
+Bentley,Continental,Bentley Continental GTC Speed,2024,Hybrid,Automatic,3996.0,600.0,285.0,2536.0,9.0,323256,2026-07-02 11:56:02,378209.52
+Ferrari,488,Ferrari 488 Spider,2015,Petrol,Automatic,3902.0,670.0,325.0,1420.0,11.4,323290,2026-07-02 11:56:00,378249.3
+Bentley,Flying Spur,Bentley Flying Spur 4.0 V8 PHEV Mulliner,2024,Plug-In Hybrid,Automatic,3996.0,600.0,285.0,2546.0,9.1,323834,2026-07-02 11:55:57,378885.78
+Land Rover,Range Rover,Land Rover Range Rover P615 SV,2022,Petrol,Automatic,4395.0,615.0,261.0,2784.0,11.7,324342,2026-07-02 11:55:54,379480.14
+Porsche,911,Porsche 911 Carrera GT3 Touring Coupé,2024,Petrol,Automatic,3996.0,510.0,311.0,1452.0,13.8,326478,2026-07-02 11:55:45,381979.26
+Porsche,911,Porsche 911 Carrera GT3 Coupé,2024,Petrol,Automatic,3996.0,510.0,311.0,1454.0,13.8,326478,2026-07-02 11:55:44,381979.26
+Porsche,911,Porsche 911 Carrera Sprit 70 Cabriolet,2024,Petrol,Automatic,3996.0,485.0,312.0,1650.0,10.4,327178,2026-07-02 11:55:42,382798.26
+Aston Martin,Db12,Aston Martin DB12 4.0 V8 Volante,2024,Petrol,Automatic,3982.0,689.0,325.0,1796.0,12.2,327601,2026-07-02 11:55:39,383293.17
+Porsche,911,Porsche 911 Turbo S Coupé,2019,Petrol,Automatic,3996.0,650.0,330.0,1615.0,11.2,328083,2026-07-02 11:55:38,383857.11
+Ferrari,F8,Ferrari F8 Tributo,2020,Petrol,Automatic,3902.0,720.0,340.0,1370.0,12.9,305591,2026-07-02 11:57:22,357541.47
+Maserati,Mcpura,Maserati MCPura MCPura,2025,Petrol,Automatic,3000.0,630.0,325.0,1475.0,11.5,305617,2026-07-02 11:57:20,357571.89
+McLaren,600Lt,McLaren 600LT Spider,2019,Petrol,Automatic,3799.0,600.0,324.0,1297.0,11.7,306000,2026-07-02 11:57:17,358020.0
+Ferrari,Gtc4,Ferrari GTC4 Lusso V8,2016,Petrol,Automatic,3855.0,610.0,320.0,1740.0,11.6,307152,2026-07-02 11:57:11,359367.84
+Bentley,Continental,Bentley Continental GT Azure,2024,Hybrid,Automatic,3996.0,519.0,270.0,2350.0,8.9,307601,2026-07-02 11:57:07,359893.17
+Mercedes-Benz,Amg Gt,Mercedes-Benz AMG GT 63 4MATIC+,2023,Petrol,Automatic,3982.0,585.0,315.0,1795.0,14.0,310458,2026-07-02 11:56:57,363235.86
+Maserati,Levante,Maserati Levante 3.8 V8 Ultima Blu Royale,2021,Petrol,Automatic,3799.0,580.0,302.0,2070.0,15.9,310626,2026-07-02 11:56:55,363432.42
+Porsche,911,Porsche 911 Turbo Cabriolet,2019,Petrol,Automatic,3996.0,580.0,320.0,1685.0,11.2,310683,2026-07-02 11:56:54,363499.11
+Bentley,Continental,Bentley Continental GT 4.0 V8,2018,Petrol,Automatic,3996.0,550.0,318.0,2065.0,11.3,312039,2026-07-02 11:56:49,365085.63
+Mercedes-Benz,S Class,Mercedes-Benz S-Class Maybach S 680 4MATIC,2026,Petrol,Automatic,2999.0,612.0,250.0,2280.0,11.0,312583,2026-07-02 11:56:45,365722.11
+Lamborghini,Urus,Lamborghini Urus Urus,2018,Petrol,Automatic,3996.0,650.0,305.0,2200.0,12.3,312975,2026-07-02 11:56:42,366180.75
+Porsche,911,Porsche 911 Dakar,2019,Petrol,Automatic,3996.0,480.0,240.0,1580.0,11.3,313183,2026-07-02 11:56:40,366424.11
+Maserati,Mcpura,Maserati MCPura Cielo,2025,Petrol,Automatic,3000.0,630.0,320.0,1540.0,11.5,314070,2026-07-02 11:56:37,367461.9
+Mercedes-Benz,G Class,Mercedes-Benz G-Class G 63 AMG,2018,Petrol,Automatic,3982.0,585.0,220.0,2460.0,13.1,314550,2026-07-02 11:56:31,368023.5
+Ferrari,Roma,Ferrari Roma Spider,2023,Petrol,Automatic,3855.0,620.0,320.0,1556.0,10.7,315848,2026-07-02 11:56:25,369542.16
+Maserati,Levante,Maserati Levante 3.8 V8 Ultima Nero Ribelle,2021,Petrol,Automatic,3799.0,580.0,302.0,2070.0,15.9,299441,2026-07-02 11:57:57,350345.97
+Porsche,Cayenne,Porsche Cayenne Turbo GT Coupé,2019,Petrol,Automatic,2995.0,640.0,300.0,2195.0,11.1,299517,2026-07-02 11:57:55,350434.89
+Bentley,Flying Spur,Bentley Flying Spur 4.0 V8 PHEV Speed,2024,Plug-In Hybrid,Automatic,3996.0,600.0,285.0,2546.0,9.1,300041,2026-07-02 11:57:54,351047.97
+Aston Martin,Db11,Aston Martin DB11 5.2 V12 AMR Coupé,2016,Petrol,Automatic,5204.0,639.0,334.0,1770.0,13.4,300507,2026-07-02 11:57:51,351593.19
+Ferrari,296,Ferrari 296 GTB,2022,Petrol,Automatic,2992.0,663.0,330.0,1470.0,6.4,300704,2026-07-02 11:57:49,351823.68
+Mercedes-Benz,Sl,Mercedes-Benz SL 63 AMG 4MATIC+,2022,Petrol,Automatic,3982.0,585.0,315.0,1870.0,13.1,302034,2026-07-02 11:57:42,353379.78
+Nissan,Gt R,Nissan GT-R Nismo,2016,Petrol,Automatic,3799.0,600.0,315.0,1725.0,11.8,302800,2026-07-02 11:57:35,354276.0
+Land Rover,Range Rover,Land Rover Range Rover 5.0 V8 Supercharged SVAutobiography LWB,2017,Petrol,Automatic,5000.0,565.0,225.0,2497.0,13.1,303911,2026-07-02 11:57:32,355575.87
+Mercedes-Benz,Gls,Mercedes-Benz GLS Maybach GLS 600 4MATIC,2023,Petrol,Automatic,3982.0,557.0,250.0,2715.0,13.9,304311,2026-07-02 11:57:30,356043.87
+Bentley,Flying Spur,Bentley Flying Spur 4.0 V8,2020,Petrol,Automatic,3996.0,550.0,318.0,2330.0,11.6,304331,2026-07-02 11:57:28,356067.27
+Audi,R8,Audi R8 Spyder V10 Performance quattro,2016,Petrol,Automatic,5204.0,620.0,329.0,1670.0,13.3,305019,2026-07-02 11:57:25,356872.23
+Aston Martin,Dbx,Aston Martin DBX DBX,2020,Petrol,Automatic,3982.0,550.0,291.0,2245.0,14.3,288013,2026-07-02 11:58:44,336975.21
+Land Rover,Range Rover Sport,Land Rover Range Rover Sport P635 SV Carbon,2022,Petrol,Automatic,4395.0,635.0,290.0,2460.0,11.9,289481,2026-07-02 11:58:36,338692.77
+Audi,R8,Audi R8 Coupé V10 Performance quattro,2016,Petrol,Automatic,5204.0,620.0,331.0,1570.0,13.1,289559,2026-07-02 11:58:35,338784.03
+Land Rover,Range Rover Sport,Land Rover Range Rover Sport P635 SV Edition Two,2022,Petrol,Automatic,4395.0,635.0,290.0,2460.0,11.9,290584,2026-07-02 11:58:27,339983.28
+Mercedes-Benz,S Class,Mercedes-Benz S-Class Maybach S 650 4MATIC,2017,Petrol,Automatic,2999.0,630.0,250.0,2260.0,14.0,293259,2026-07-02 11:58:16,343113.03
+Porsche,911,Porsche 911 Targa 4 GTS,2020,Petrol,Automatic,3996.0,480.0,307.0,1625.0,10.8,243183,2026-07-02 12:04:41,284524.11
+Bentley,Bentayga,Bentley Bentayga 3.0 V6 Hybrid S,2020,Hybrid,Automatic,3996.0,340.0,254.0,2548.0,9.6,243936,2026-07-02 12:04:28,285405.12
+McLaren,570S,McLaren 570S 570S,2015,Petrol,Automatic,3799.0,570.0,328.0,1320.0,11.2,244000,2026-07-02 12:04:26,285480.0
+Porsche,911,Porsche 911 Carrera GTS Coupé,2024,Petrol,Automatic,3996.0,485.0,312.0,1570.0,10.5,244378,2026-07-02 12:04:24,285922.26
+Bentley,Bentayga,Bentley Bentayga 3.0 V6 Hybrid,2020,Hybrid,Automatic,3996.0,340.0,254.0,2548.0,9.6,235099,2026-07-02 12:06:04,275065.83
+BMW,8 Series,BMW 8-Series M8 Competition Cabrio,2019,Petrol,Automatic,4395.0,625.0,250.0,2000.0,10.6,235648,2026-07-02 12:05:59,275708.16
+Mercedes-Benz,Gle,Mercedes-Benz GLE 63 AMG S 4MATIC+ Coupé,2020,Petrol,Automatic,3982.0,612.0,250.0,2345.0,11.5,235944,2026-07-02 12:05:55,276054.48
+Mercedes-Benz,G Class,Mercedes-Benz G-Class G 63 AMG,2015,Petrol,Automatic,3982.0,571.0,210.0,2450.0,13.8,236034,2026-07-02 12:05:53,276159.78
+Maserati,Granturismo,Maserati GranTurismo MC,2018,Petrol,Automatic,3000.0,460.0,301.0,1773.0,14.3,236468,2026-07-02 12:05:47,276667.56
+Porsche,911,Porsche 911 Turbo Coupé,2019,Petrol,Automatic,3996.0,580.0,320.0,1615.0,11.1,294683,2026-07-02 11:58:13,344779.11
+Lamborghini,Huracan,Lamborghini Huracán Spyder LP610-4,2016,Petrol,Automatic,5204.0,610.0,324.0,1542.0,12.3,294766,2026-07-02 11:58:12,344876.22
+Mercedes-Benz,Sl,Mercedes-Benz SL 63 AMG 4MATIC+ Night Edition,2022,Petrol,Automatic,3982.0,585.0,315.0,1870.0,13.4,294829,2026-07-02 11:58:10,344949.93
+Mercedes-Benz,Gls,Mercedes-Benz GLS 63 AMG 4MATIC+,2023,Petrol,Automatic,3982.0,612.0,250.0,2600.0,13.3,295698,2026-07-02 11:58:07,345966.66
+Mercedes-Benz,Amg Gt,Mercedes-Benz AMG GT 63 4MATIC+ Night Edition,2023,Petrol,Automatic,3982.0,585.0,315.0,1795.0,14.0,297689,2026-07-02 11:58:03,348296.13
+Ferrari,488,Ferrari 488 GTB,2015,Petrol,Automatic,3902.0,670.0,330.0,1370.0,11.4,298091,2026-07-02 11:58:00,348766.47
+Bentley,Continental,Bentley Continental GT 6.0 W12,2018,Petrol,Automatic,3996.0,635.0,333.0,2144.0,12.2,279323,2026-07-02 11:59:39,326807.91
+Land Rover,Range Rover Sport,Land Rover Range Rover Sport P635 SV Black,2022,Petrol,Automatic,4395.0,635.0,290.0,2460.0,11.9,280118,2026-07-02 11:59:33,327738.06
+Bentley,Continental,Bentley Continental GTC,2024,Hybrid,Automatic,3996.0,519.0,270.0,2528.0,9.0,283303,2026-07-02 11:59:22,331464.51
+Porsche,911,Porsche 911 Carrera GT3 Touring Coupé,2019,Petrol,Automatic,3996.0,510.0,320.0,1393.0,12.9,284383,2026-07-02 11:59:16,332728.11
+Mercedes-Benz,Amg Gt,Mercedes-Benz AMG GT 55 4MATIC+,2023,Petrol,Automatic,3982.0,476.0,295.0,1795.0,14.0,284863,2026-07-02 11:59:10,333289.71
+Porsche,911,Porsche 911 Carrera GT3 Coupé,2019,Petrol,Automatic,3996.0,510.0,320.0,1393.0,12.9,284883,2026-07-02 11:59:06,333313.11
+BMW,X6,BMW X6 M Competition,2023,Petrol,Automatic,4395.0,625.0,250.0,2345.0,12.7,249163,2026-07-02 12:03:50,291520.71
+Audi,R8,Audi R8 Spyder V10 RWD,2016,Petrol,Automatic,5204.0,540.0,318.0,1655.0,12.6,250074,2026-07-02 12:03:42,292586.58
+McLaren,570Gt,McLaren 570GT 570GT,2015,Petrol,Automatic,3799.0,570.0,328.0,1320.0,11.2,250200,2026-07-02 12:03:40,292734.0
+BMW,7 Series,BMW 7-Series M760Li xDrive,2019,Petrol,Automatic,6592.0,585.0,250.0,2195.0,12.4,250527,2026-07-02 12:03:38,293116.59
+BMW,7 Series,BMW 7-Series M760Li xDrive,2015,Petrol,Automatic,6592.0,610.0,250.0,2155.0,12.8,250669,2026-07-02 12:03:34,293282.73
+Porsche,911,Porsche 911 Targa 4 S,2024,Petrol,Automatic,3996.0,480.0,308.0,1670.0,10.8,250778,2026-07-02 12:03:32,293410.26
+Maserati,Quattroporte,Maserati Quattroporte 3.0 V6 S Q4 Modena,2021,Petrol,Automatic,2979.0,430.0,288.0,1980.0,12.2,239831,2026-07-02 12:05:11,280602.27
+Mercedes-Benz,S Class,Mercedes-Benz S-Class S 63 AMG 4MATIC Coupé,2018,Petrol,Automatic,2999.0,612.0,250.0,1980.0,11.2,240591,2026-07-02 12:05:08,281491.47
+Bentley,Flying Spur,Bentley Flying Spur 4.0 V8 PHEV,2024,Plug-In Hybrid,Automatic,3996.0,519.0,270.0,2541.0,9.3,240659,2026-07-02 12:05:06,281571.03
+Mercedes-Benz,Amg Gt,Mercedes-Benz AMG GT C Roadster,2016,Petrol,Automatic,3982.0,557.0,316.0,1635.0,12.5,240958,2026-07-02 12:05:04,281920.86
+Mercedes-Benz,G Class,Mercedes-Benz G-Class G 500,2018,Petrol,Automatic,3982.0,422.0,210.0,2329.0,11.5,242160,2026-07-02 12:04:59,283327.2
+Porsche,911,Porsche 911 Carrera 4 GTS Cabriolet,2019,Petrol,Automatic,3996.0,480.0,307.0,1640.0,11.0,242683,2026-07-02 12:04:51,283939.11
+Porsche,Cayenne,Porsche Cayenne Turbo Coupé,2019,Petrol,Automatic,2995.0,550.0,286.0,2175.0,11.1,242817,2026-07-02 12:04:48,284095.89
+Land Rover,Range Rover Sport,Land Rover Range Rover Sport P635 SV Edition One,2022,Petrol,Automatic,4395.0,635.0,290.0,2460.0,11.9,285322,2026-07-02 11:59:03,333826.74
+McLaren,600Lt,McLaren 600LT 600LT,2018,Petrol,Automatic,3799.0,600.0,328.0,1247.0,11.7,285500,2026-07-02 11:59:01,334035.0
+Porsche,Panamera,Porsche Panamera Turbo S Executive,2020,Petrol,Automatic,2894.0,630.0,315.0,2160.0,12.9,286223,2026-07-02 11:59:00,334880.91
+Bentley,Bentayga,Bentley Bentayga W12,2016,Electric,Automatic,3996.0,608.0,301.0,2340.0,13.1,286257,2026-07-02 11:58:58,334920.69
+Bentley,Flying Spur,Bentley Flying Spur 4.0 V8 PHEV Azure,2024,Plug-In Hybrid,Automatic,3996.0,519.0,270.0,2541.0,9.3,287737,2026-07-02 11:58:50,336652.29
+Audi,R8,Audi R8 Spyder V10 Plus quattro,2016,Petrol,Automatic,5204.0,610.0,328.0,1670.0,12.5,287880,2026-07-02 11:58:46,336819.6
+Land Rover,Range Rover,Land Rover Range Rover P530 SV,2022,Petrol,Automatic,4395.0,530.0,250.0,2585.0,11.6,271984,2026-07-02 12:00:41,318221.28
+Mercedes-Benz,Amg Gt,Mercedes-Benz AMG GT 55 4MATIC+ Night Edition,2023,Petrol,Automatic,3982.0,476.0,295.0,1795.0,14.0,272279,2026-07-02 12:00:37,318566.43
+Audi,R8,Audi R8 Coupé V10 Plus quattro,2016,Petrol,Automatic,5204.0,610.0,330.0,1530.0,12.3,272420,2026-07-02 12:00:36,318731.4
+Porsche,911,Porsche 911 GT3 RS Coupé,2015,Petrol,Automatic,3996.0,520.0,312.0,1405.0,12.8,273328,2026-07-02 12:00:32,319793.76
+Bentley,Bentayga,Bentley Bentayga 3.0 V6 Hybrid Azure,2020,Hybrid,Automatic,3996.0,340.0,254.0,2548.0,9.6,274043,2026-07-02 12:00:25,320630.31
+Mercedes-Benz,S Class,Mercedes-Benz S-Class Maybach S 580 4MATIC,2026,Petrol,Automatic,2999.0,537.0,250.0,2265.0,10.8,274281,2026-07-02 12:00:24,320908.77
+Land Rover,Range Rover,Land Rover Range Rover P530 Autobiography,2022,Petrol,Automatic,4395.0,530.0,250.0,2585.0,11.6,274666,2026-07-02 12:00:22,321359.22
+Porsche,911,Porsche 911 Targa 4 GTS edition 50 years Porsche design,2020,Petrol,Automatic,3996.0,480.0,307.0,1660.0,11.0,274683,2026-07-02 12:00:21,321379.11
+Aston Martin,Db11,Aston Martin DB11 5.2 V12 Coupé,2016,Petrol,Automatic,5204.0,608.0,322.0,1770.0,11.4,274914,2026-07-02 12:00:17,321649.38
+Aston Martin,Db11,Aston Martin DB11 4.0 V8 Volante,2018,Petrol,Automatic,5204.0,510.0,300.0,1870.0,10.0,275629,2026-07-02 12:00:09,322485.93
+Ferrari,Portofino,Ferrari Portofino M,2021,Hybrid,Automatic,3855.0,600.0,320.0,1545.0,11.3,275754,2026-07-02 12:00:07,322632.18
+Porsche,Panamera,Porsche Panamera Turbo S Sport Turismo,2020,Petrol,Automatic,2894.0,630.0,315.0,2110.0,13.0,277723,2026-07-02 11:59:56,324935.91
+Mercedes-Benz,Amg Gt 4 Door,Mercedes-Benz AMG GT 4-Door AMG GT 63 S 4MATIC+,2018,Petrol,Automatic,3982.0,639.0,315.0,1935.0,13.0,277921,2026-07-02 11:59:54,325167.57
+Ferrari,Roma,Ferrari Roma Roma,2020,Hybrid,Automatic,3855.0,620.0,320.0,1570.0,10.7,278285,2026-07-02 11:59:52,325593.45
+Land Rover,Range Rover,Land Rover Range Rover 4.4 SDV8 SVAutobiography LWB,2017,Diesel,Automatic,4367.0,339.0,217.0,2658.0,9.2,278745,2026-07-02 11:59:48,326131.65
+Porsche,718,Porsche 718 Cayman GT4 RS,2016,Petrol,Automatic,3996.0,500.0,315.0,1390.0,13.2,263168,2026-07-02 12:01:48,307906.56
+BMW,8 Series,BMW 8-Series M8 Competition Cabrio,2022,Petrol,Automatic,4395.0,625.0,250.0,2000.0,10.6,264303,2026-07-02 12:01:43,309234.51
+McLaren,570S,McLaren 570S Spider,2017,Petrol,Automatic,3799.0,570.0,328.0,1359.0,11.0,264500,2026-07-02 12:01:40,309465.0
+Land Rover,Range Rover Sport,Land Rover Range Rover Sport P635 SV,2022,Petrol,Automatic,4395.0,635.0,290.0,2460.0,11.9,264626,2026-07-02 12:01:38,309612.42
+Audi,Q8,Audi Q8 RS Q8 TFSI quattro performance,2024,Petrol,Automatic,3996.0,640.0,250.0,2250.0,13.1,265430,2026-07-02 12:01:34,310553.1
+Mercedes-Benz,Sl,Mercedes-Benz SL 55 AMG 4MATIC+ Night Edition,2022,Petrol,Automatic,3982.0,476.0,295.0,1850.0,13.4,266449,2026-07-02 12:01:29,311745.33
+Maserati,Levante,Maserati Levante 3.8 V8 Trofeo,2021,Petrol,Automatic,3799.0,580.0,302.0,2070.0,15.9,266743,2026-07-02 12:01:27,312089.31
+Lamborghini,Huracan,Lamborghini Huracán Spyder LP580-2,2016,Petrol,Automatic,5204.0,580.0,319.0,1509.0,12.1,266790,2026-07-02 12:01:25,312144.3
+Land Rover,Range Rover,Land Rover Range Rover 5.0 V8 Supercharged SVAutobiography,2017,Petrol,Automatic,5000.0,565.0,225.0,2497.0,13.1,268931,2026-07-02 12:01:18,314649.27
+Land Rover,Range Rover,Land Rover Range Rover D350 SVAutobiography LWB,2017,Diesel,Automatic,2997.0,350.0,225.0,2518.0,9.3,269196,2026-07-02 12:01:15,314959.32
+Maserati,Ghibli,Maserati Ghibli 3.8 V8 334,2021,Petrol,Automatic,3799.0,580.0,334.0,1960.0,12.3,269306,2026-07-02 12:01:13,315088.02
+Mercedes-Benz,Sl,Mercedes-Benz SL 55 AMG 4MATIC+,2022,Petrol,Automatic,3982.0,476.0,295.0,1850.0,12.9,269408,2026-07-02 12:01:11,315207.36
+Porsche,Panamera,Porsche Panamera Turbo S,2020,Petrol,Automatic,2894.0,630.0,315.0,2055.0,12.8,270623,2026-07-02 12:00:49,316628.91
+Porsche,911,Porsche 911 Carrera 4 GTS Cabriolet,2024,Petrol,Automatic,3996.0,485.0,312.0,1700.0,10.7,270678,2026-07-02 12:00:47,316693.26
+Porsche,911,Porsche 911 Targa 4 GTS,2024,Petrol,Automatic,3996.0,485.0,312.0,1720.0,10.8,270678,2026-07-02 12:00:44,316693.26
+Mercedes-Benz,Gle,Mercedes-Benz GLE 63 AMG S 4MATIC+ Coupé,2023,Petrol,Automatic,3982.0,612.0,280.0,2405.0,12.5,255724,2026-07-02 12:02:42,299197.08
+Mercedes-Benz,S Class,Mercedes-Benz S-Class S 600 Long,2017,Petrol,Automatic,2999.0,530.0,250.0,2135.0,14.0,256354,2026-07-02 12:02:36,299934.18
+Porsche,718,Porsche 718 Boxster Spyder RS,2016,Petrol,Automatic,3996.0,500.0,308.0,1385.0,13.0,257286,2026-07-02 12:02:27,301024.62
+Aston Martin,Db11,Aston Martin DB11 4.0 V8 Coupé,2016,Petrol,Automatic,5204.0,510.0,300.0,1770.0,10.0,257304,2026-07-02 12:02:26,301045.68
+Bentley,Continental,Bentley Continental GT,2024,Hybrid,Automatic,3996.0,519.0,270.0,2350.0,8.9,257371,2026-07-02 12:02:24,301124.07
+Maserati,Quattroporte,Maserati Quattroporte 3.8 V8 Trofeo,2021,Petrol,Automatic,3799.0,580.0,326.0,2000.0,12.2,259988,2026-07-02 12:02:07,304185.96
+Porsche,911,Porsche 911 Carrera Turbo S Cabriolet,2015,Petrol,Automatic,3996.0,580.0,330.0,1645.0,9.3,260528,2026-07-02 12:02:04,304817.76
+Mercedes-Benz,S Class,Mercedes-Benz S-Class S 63 AMG 4MATIC Cabriolet,2018,Petrol,Automatic,2999.0,612.0,250.0,2085.0,11.5,261347,2026-07-02 12:02:02,305775.99
+Land Rover,Range Rover,Land Rover Range Rover D350 SV,2022,Petrol,Automatic,2997.0,350.0,234.0,2505.0,7.9,261669,2026-07-02 12:02:01,306152.73
+Porsche,911,Porsche 911 Carrera GTS Cabriolet,2024,Petrol,Automatic,3996.0,485.0,312.0,1650.0,10.7,261678,2026-07-02 12:01:59,306163.26
+Mercedes-Benz,S Class,Mercedes-Benz S-Class Maybach S 580 4MATIC,2021,Petrol,Automatic,2999.0,503.0,250.0,2140.0,10.4,262555,2026-07-02 12:01:57,307189.35
+Land Rover,Range Rover,Land Rover Range Rover D300 SVAutobiography LWB,2017,Diesel,Automatic,2997.0,300.0,209.0,2518.0,9.3,263094,2026-07-02 12:01:52,307819.98
+BMW,8 Series,BMW 8-Series M8 Competition Gran Coupé,2022,Petrol,Automatic,4395.0,625.0,250.0,1970.0,10.7,250872,2026-07-02 12:03:30,293520.24
+Maserati,Grancabrio,Maserati GranCabrio MC,2018,Petrol,Automatic,4691.0,460.0,291.0,1873.0,14.5,250968,2026-07-02 12:03:27,293632.56
+McLaren,Gt,McLaren GT GT,2020,Petrol,Automatic,3994.0,620.0,326.0,1466.0,11.9,252065,2026-07-02 12:03:21,294916.05
+BMW,8 Series,BMW 8-Series M8 Competition Coupé,2022,Petrol,Automatic,4395.0,625.0,250.0,1875.0,10.5,252230,2026-07-02 12:03:17,295109.1
+Land Rover,Range Rover,Land Rover Range Rover 3.0 SDV6 SVAutobiography LWB,2017,Diesel,Automatic,2993.0,275.0,209.0,2249.0,7.6,252325,2026-07-02 12:03:12,295220.25
+Porsche,911,Porsche 911 Carrera 4 GTS Coupé,2024,Petrol,Automatic,3996.0,485.0,312.0,1620.0,10.5,252789,2026-07-02 12:03:07,295763.13
+Audi,R8,Audi R8 Spyder V10 quattro,2016,Petrol,Automatic,5204.0,540.0,318.0,1695.0,11.7,252810,2026-07-02 12:03:04,295787.7
+Land Rover,Range Rover,Land Rover Range Rover P530 HSE,2022,Petrol,Automatic,4395.0,530.0,250.0,2585.0,11.4,253714,2026-07-02 12:02:57,296845.38
+Maserati,Granturismo,Maserati GranTurismo Trofeo,2023,Petrol,Automatic,3000.0,550.0,320.0,1795.0,10.2,254400,2026-07-02 12:02:53,297648.0
+Mercedes-Benz,Gls,Mercedes-Benz GLS Maybach GLS 600 4MATIC,2019,Petrol,Automatic,3982.0,557.0,250.0,2685.0,13.1,254525,2026-07-02 12:02:51,297794.25
+Porsche,Panamera,Porsche Panamera GTS,2023,Petrol,Automatic,2894.0,500.0,302.0,2040.0,12.0,254810,2026-07-02 12:02:49,298127.7
+Ferrari,Portofino,Ferrari Portofino 3.8 T,2018,Petrol,Automatic,3855.0,600.0,320.0,1545.0,10.7,244737,2026-07-02 12:04:19,286342.29
+Mercedes-Benz,Gls,Mercedes-Benz GLS 63 AMG 4MATIC+,2019,Petrol,Automatic,3982.0,612.0,250.0,2530.0,11.9,244934,2026-07-02 12:04:17,286572.78
+Porsche,911,Porsche 911 Turbo S Coupé,2015,Petrol,Automatic,3996.0,580.0,330.0,1575.0,9.1,245328,2026-07-02 12:04:15,287033.76
+BMW,8 Series,BMW 8-Series M8 Cabrio,2022,Petrol,Automatic,4395.0,600.0,250.0,2000.0,10.6,246153,2026-07-02 12:04:12,287999.01
+Mercedes-Benz,S Class,Mercedes-Benz S-Class S 63 AMG 4MATIC Cabriolet,2016,Petrol,Automatic,2999.0,585.0,250.0,2085.0,10.4,246553,2026-07-02 12:04:10,288467.01
+BMW,X5,BMW X5 M Competition,2023,Petrol,Automatic,4395.0,625.0,250.0,2375.0,12.9,247607,2026-07-02 12:04:05,289700.19
+Mercedes-Benz,Gle,Mercedes-Benz GLE 63 AMG S 4MATIC+,2023,Petrol,Automatic,3982.0,612.0,280.0,2395.0,12.5,248101,2026-07-02 12:04:03,290278.17
+Bentley,Bentayga,Bentley Bentayga V8,2016,Petrol,Automatic,3996.0,550.0,290.0,2288.0,9.0,232776,2026-07-02 12:06:43,272347.92
+Porsche,911,Porsche 911 GT3 Coupé Touring Package,2015,Petrol,Automatic,3996.0,500.0,316.0,1413.0,13.3,232940,2026-07-02 12:06:40,272539.8
+Maserati,Levante,Maserati Levante 3.8 V8 GTS,2021,Petrol,Automatic,3799.0,530.0,292.0,2070.0,15.8,233550,2026-07-02 12:06:33,273253.5
+BMW,8 Series,BMW 8-Series M8 Coupé,2022,Petrol,Automatic,4395.0,600.0,250.0,1875.0,10.5,234080,2026-07-02 12:06:26,273873.6
+Porsche,Cayenne,Porsche Cayenne GTS,2023,Petrol,Automatic,2995.0,500.0,275.0,2165.0,12.6,234210,2026-07-02 12:06:24,274025.7
+Audi,R8,Audi R8 Coupé V10 RWD,2016,Petrol,Automatic,5204.0,540.0,320.0,1565.0,12.4,234614,2026-07-02 12:06:16,274498.38
+Rolls-Royce,Cullinan,Rolls-Royce Cullinan Black Badge,2019,Petrol,Automatic,6749.0,600.0,250.0,2660.0,16.3,494452,2026-07-02 11:51:51,578508.84
+Lamborghini,Aventador,Lamborghini Aventador Roadster S,2017,Petrol,Automatic,6498.0,740.0,350.0,1575.0,16.9,521385,2026-07-02 11:51:43,610020.45
+Rolls-Royce,Cullinan,Rolls-Royce Cullinan Cullinan,2025,Petrol,Automatic,6749.0,571.0,250.0,2700.0,15.0,542995,2026-07-02 11:51:35,635304.15
+Rolls-Royce,Phantom,Rolls-Royce Phantom Phantom,2018,Petrol,Automatic,6749.0,571.0,250.0,2560.0,13.9,557980,2026-07-02 11:51:28,652836.6
+McLaren,765Lt,McLaren 765LT Spider,2020,Petrol,Automatic,3994.0,765.0,330.0,1229.0,13.0,441000,2026-07-02 11:52:17,515970.0
+Bentley,Mulsanne,Bentley Mulsanne Extended Wheelbase,2017,Petrol,Automatic,6752.0,512.0,296.0,2630.0,15.0,454499,2026-07-02 11:52:12,531763.83
+Rolls-Royce,Dawn,Rolls-Royce Dawn Dawn,2016,Petrol,Automatic,6592.0,570.0,250.0,2460.0,14.2,462300,2026-07-02 11:52:07,540891.0
+Rolls-Royce,Dawn,Rolls-Royce Dawn Black Badge,2016,Petrol,Automatic,6592.0,601.0,250.0,2460.0,14.7,462300,2026-07-02 11:52:06,540891.0
+Ferrari,812,Ferrari 812 GTS,2020,Petrol,Automatic,6496.0,800.0,340.0,1600.0,14.9,472293,2026-07-02 11:52:00,552582.81
+Lamborghini,Aventador,Lamborghini Aventador S,2017,Petrol,Automatic,6498.0,740.0,350.0,1575.0,16.9,482894,2026-07-02 11:51:57,564985.98
+Mercedes-Benz,G Class,Mercedes-Benz G-Class G 400 d,2018,Diesel,Automatic,3982.0,330.0,210.0,2389.0,9.6,229986,2026-07-02 12:07:14,269083.62
+Mercedes-Benz,Sl,Mercedes-Benz SL 63 AMG,2016,Petrol,Automatic,3982.0,585.0,250.0,1745.0,9.8,228809,2026-07-02 12:07:29,267706.53
+BMW,X6,BMW X6 M Competition,2019,Petrol,Automatic,4395.0,625.0,250.0,2270.0,12.5,228162,2026-07-02 12:07:35,266949.54
+Porsche,911,Porsche 911 GT3 Coupé,2015,Petrol,Automatic,3996.0,500.0,320.0,1413.0,12.9,227444,2026-07-02 12:07:45,266109.48
+Land Rover,Range Rover,Land Rover Range Rover 5.0 V8 Supercharged Autobiography,2017,Petrol,Automatic,5000.0,525.0,225.0,2383.0,12.7,227341,2026-07-02 12:07:48,265988.97
+Land Rover,Defender,Land Rover Defender 130 P425 X-Dynamic SE,2022,Petrol,Automatic,2996.0,425.0,191.0,2608.0,14.2,226943,2026-07-02 12:07:57,265523.31
+Audi,A8,Audi A8 S8,2022,Petrol,Automatic,3996.0,571.0,250.0,2195.0,10.7,228430,2026-07-02 12:07:31,267263.1
+Maserati,Levante,Maserati Levante Trofeo,2016,Petrol,Automatic,3799.0,580.0,300.0,2109.0,13.2,230549,2026-07-02 12:07:12,269742.33
+Porsche,Cayenne,Porsche Cayenne Turbo E-Hybrid Coupé GT,2023,Hybrid,Automatic,2995.0,599.0,305.0,2470.0,,230765,2026-07-02 12:07:09,269995.05
+Ferrari,Sf90,Ferrari SF90 Stradale,2020,Hybrid,Automatic,3990.0,780.0,340.0,1570.0,,454303,2026-07-02 11:52:13,531534.51
+Lamborghini,Aventador,Lamborghini Aventador SVJ,2017,Petrol,Automatic,6498.0,770.0,350.0,1575.0,,563361,2026-07-02 11:51:26,659132.37
+Ferrari,12Cilindri,Ferrari 12Cilindri Spider,2025,Petrol,Automatic,6496.0,830.0,340.0,1560.0,,549821,2026-07-02 11:51:32,643290.57
+Ferrari,Sf90,Ferrari SF90 Spider Assetto Fiorano,2021,Hybrid,Automatic,3990.0,780.0,340.0,1530.0,,540498,2026-07-02 11:51:36,632382.66
+Ferrari,12Cilindri,Ferrari 12Cilindri 12Cilindri,2025,Petrol,Automatic,6496.0,830.0,340.0,1560.0,,504478,2026-07-02 11:51:48,590239.26
+Ferrari,Sf90,Ferrari SF90 Spider,2021,Hybrid,Automatic,3990.0,780.0,340.0,1570.0,,488408,2026-07-02 11:51:53,571437.36
+Land Rover,Defender,Land Rover Defender 130 P425 X-Dynamic HSE,2022,Petrol,Automatic,2996.0,425.0,191.0,2608.0,14.2,234287,2026-07-02 12:06:21,274115.79
+Lucid,Air,Lucid Air Sapphire,2022,Hybrid,Automatic,627.0,251.0,330.0,2375.0,,254916,2026-07-02 12:02:44,298251.72
+Land Rover,Range Rover,Land Rover Range Rover P400 MHEV SVAutobiography LWB,2017,Petrol,Automatic,,400.0,225.0,2450.0,9.5,253411,2026-07-02 12:03:00,296490.87
+Porsche,Panamera,Porsche Panamera Turbo S E-Hybrid Executive,2023,Hybrid,Automatic,2894.0,559.0,325.0,2435.0,,254870,2026-07-02 12:02:48,298197.9
+Mercedes-Benz,Amg Gt 4 Door,Mercedes-Benz AMG GT 4-Door AMG GT 63 S E Performance,2018,Hybrid,Automatic,3982.0,639.0,316.0,2280.0,,251216,2026-07-02 12:03:26,293922.72
+Mercedes-Benz,S Class,Mercedes-Benz S-Class S 63 AMG E Performance Long,2020,Hybrid,Automatic,2999.0,612.0,290.0,2420.0,,253007,2026-07-02 12:03:02,296018.19
+Land Rover,Range Rover,Land Rover Range Rover LWB P530 Autobiography,2022,Petrol,Automatic,4395.0,530.0,250.0,2708.0,11.7,279928,2026-07-02 11:59:35,327515.76
+Mercedes-Benz,Gls,Mercedes-Benz GLS 580 4MATIC AMG Line,2023,Petrol,Automatic,3982.0,517.0,250.0,2540.0,13.6,240357,2026-07-02 12:05:09,281217.69
+Land Rover,Range Rover,Land Rover Range Rover LWB P530 HSE,2022,Petrol,Automatic,4395.0,530.0,250.0,2626.0,11.6,259666,2026-07-02 12:02:10,303809.22
+Land Rover,Defender,Land Rover Defender 90 P525 V8,2019,Petrol,Automatic,,525.0,240.0,2546.0,14.2,259133,2026-07-02 12:02:16,303185.61
+Land Rover,Defender,Land Rover Defender 130 V8,2022,Petrol,Automatic,,500.0,240.0,2706.0,14.4,271149,2026-07-02 12:00:42,317244.33
+Land Rover,Defender,Land Rover Defender 130 P425 X,2022,Petrol,Automatic,2996.0,425.0,191.0,2608.0,14.3,257141,2026-07-02 12:02:30,300854.97
+Mercedes-Benz,Sl,Mercedes-Benz SL 63 AMG S E Performance Night Edition,2022,Hybrid,Automatic,3982.0,612.0,317.0,2095.0,,275095,2026-07-02 12:00:16,321861.15
+Land Rover,Defender,Land Rover Defender 110 P635 Octa,2019,Petrol,Automatic,4395.0,635.0,250.0,2585.0,13.1,286811,2026-07-02 11:58:53,335568.87
+Mercedes-Benz,Amg Gt,Mercedes-Benz AMG GT 63 S E Performance Night Edition,2023,Hybrid,Automatic,3982.0,612.0,320.0,2020.0,,278767,2026-07-02 11:59:46,326157.39
+Maserati,Grancabrio,Maserati GranCabrio Trofeo,2024,Petrol,Automatic,4691.0,550.0,316.0,1795.0,,278795,2026-07-02 11:59:43,326190.15
+Land Rover,Defender,Land Rover Defender 110 P525 V8 Carpathia Edition,2019,Petrol,Automatic,,525.0,240.0,2415.0,14.4,239805,2026-07-02 12:05:15,280571.85
+Maserati,Levante,Maserati Levante Launch Edition,2016,Petrol,Automatic,2979.0,580.0,300.0,2109.0,13.2,250649,2026-07-02 12:03:36,293259.33
+Land Rover,Range Rover,Land Rover Range Rover LWB P530 SV,2022,Petrol,Automatic,4395.0,530.0,250.0,2626.0,11.8,296113,2026-07-02 11:58:05,346452.21
+Land Rover,Defender,Land Rover Defender 90 P525 V8 Carpathia Edition,2019,Petrol,Automatic,,525.0,240.0,2546.0,14.2,234671,2026-07-02 12:06:14,274565.07
+Land Rover,Range Rover,Land Rover Range Rover LWB D350 Autobiography,2022,Petrol,Automatic,2997.0,350.0,234.0,2569.0,7.6,234900,2026-07-02 12:06:10,274833.0
+Land Rover,Range Rover,Land Rover Range Rover LWB P530 First Edition,2022,Petrol,Automatic,4395.0,530.0,250.0,2626.0,11.8,236077,2026-07-02 12:05:51,276210.09
+Lamborghini,Aventador,Lamborghini Aventador Roadster SVJ,2017,Petrol,Automatic,6498.0,770.0,350.0,1575.0,,607205,2026-07-02 11:51:21,710429.85
+Aston Martin,Vantage,Aston Martin Vantage 5.2 V12,2018,Petrol,Automatic,5204.0,700.0,322.0,1795.0,,382001,2026-07-02 11:53:15,446941.17
+Ferrari,Gtc4,Ferrari GTC4 Lusso V12,2016,Petrol,Automatic,6262.0,690.0,335.0,1790.0,15.3,374276,2026-07-02 11:53:25,437902.92
+Land Rover,Defender,Land Rover Defender 110 P425 X,2019,Petrol,Automatic,2996.0,425.0,191.0,2411.0,14.2,243833,2026-07-02 12:04:30,285284.61
+Land Rover,Range Rover,Land Rover Range Rover LWB D350 First Edition,2022,Petrol,Automatic,2997.0,350.0,234.0,2569.0,8.1,243296,2026-07-02 12:04:39,284656.32
+Porsche,Panamera,Porsche Panamera Turbo S E-Hybrid,2023,Hybrid,Automatic,2894.0,559.0,325.0,2340.0,,243370,2026-07-02 12:04:37,284742.9
+Mercedes-Benz,Amg Gt,Mercedes-Benz AMG GT 63 S E Performance,2023,Hybrid,Automatic,3982.0,612.0,320.0,2020.0,,293892,2026-07-02 11:58:15,343853.64
+Mercedes-Benz,Sl,Mercedes-Benz SL 63 AMG S E Performance,2022,Hybrid,Automatic,3982.0,612.0,317.0,2095.0,,290220,2026-07-02 11:58:29,339557.4
+Land Rover,Defender,Land Rover Defender 110 P635 Octa Edition One,2019,Petrol,Automatic,4395.0,635.0,250.0,2585.0,13.2,300208,2026-07-02 11:57:53,351243.36
+Land Rover,Range Rover,Land Rover Range Rover LWB D350 SV,2022,Petrol,Automatic,2997.0,350.0,234.0,2569.0,8.2,288444,2026-07-02 11:58:42,337479.48
+Lamborghini,Huracan,Lamborghini Huracán Evo Spyder 5.2 V10 RWD,2016,Petrol,Automatic,5204.0,610.0,325.0,1509.0,,302085,2026-07-02 11:57:40,353439.45
+Land Rover,Defender,Land Rover Defender 110 P635 Octa Black,2019,Petrol,Automatic,4395.0,635.0,250.0,2585.0,13.1,302197,2026-07-02 11:57:38,353570.49
+Bentley,Continental,Bentley Continental GTC 6.0 W12,2019,Petrol,Automatic,3996.0,635.0,333.0,2314.0,,298593,2026-07-02 11:57:59,349353.81
+Mercedes-Benz,Sl,Mercedes-Benz SL 680 Maybach Monogram Series,2022,Petrol,Automatic,5980.0,585.0,260.0,1950.0,13.6,369794,2026-07-02 11:53:38,432658.98
+Lamborghini,Huracan,Lamborghini Huracán Evo Spyder 5.2 V10,2016,Petrol,Automatic,5204.0,639.0,325.0,1542.0,,336087,2026-07-02 11:55:04,393221.79
+Aston Martin,Db12,Aston Martin DB12 4.0 V8 Coupé,2024,Petrol,Automatic,3982.0,689.0,325.0,1685.0,,309807,2026-07-02 11:56:59,362474.19
+Ferrari,Sf90,Ferrari SF90 XX Spider,2021,Hybrid,Automatic,3990.0,797.0,320.0,1660.0,,874687,2026-07-02 11:51:00,1023383.79
+BMW,5 Series,BMW 5-Series M5 CS,2020,Petrol,Automatic,4395.0,635.0,305.0,1800.0,11.0,226760,2026-07-02 12:08:06,265309.2
+Land Rover,Defender,Land Rover Defender 110 P525 V8,2019,Petrol,Automatic,,525.0,240.0,2415.0,14.4,232255,2026-07-02 12:06:55,271738.35
+Land Rover,Range Rover,Land Rover Range Rover LWB P615 SV Black,2022,Petrol,Automatic,4395.0,615.0,261.0,2801.0,11.8,365860,2026-07-02 11:53:44,428056.2
+Land Rover,Range Rover,Land Rover Range Rover LWB P615 SV,2022,Petrol,Automatic,4395.0,615.0,261.0,2801.0,11.8,352344,2026-07-02 11:54:21,412242.48
+Aston Martin,Vantage,Aston Martin Vantage Roadster 5.2 V12,2018,Petrol,Automatic,5204.0,700.0,322.0,1855.0,,432140,2026-07-02 11:52:25,505603.8
+Land Rover,Defender,Land Rover Defender 90 P425 X,2019,Petrol,Automatic,2996.0,425.0,191.0,2300.0,9.6,237683,2026-07-02 12:05:30,278089.11
+McLaren,675Lt,McLaren 675LT 675LT,2015,Petrol,Automatic,3799.0,675.0,330.0,1230.0,11.7,387750,2026-07-02 11:53:07,453667.5
+Ferrari,Sf90,Ferrari SF90 XX Stradale,2020,Hybrid,Automatic,3990.0,797.0,320.0,1560.0,,795342,2026-07-02 11:51:02,930550.14
+McLaren,Artura,McLaren Artura Artura,2022,Petrol,Automatic,2993.0,605.0,330.0,1398.0,,263100,2026-07-02 12:01:49,307827.0
+Porsche,Taycan,Porsche Taycan Turbo GT Weissach Pack,2024,Hybrid,Automatic,,789.0,305.0,2195.0,,248744,2026-07-02 12:03:53,291030.48
+Porsche,Taycan,Porsche Taycan Turbo GT,2024,Hybrid,Automatic,,789.0,290.0,2265.0,,248744,2026-07-02 12:03:55,291030.48
+Land Rover,Range Rover,Land Rover Range Rover LWB P460e SV,2022,Hybrid,Automatic,2996.0,400.0,225.0,2810.0,,235149,2026-07-02 12:06:02,275124.33
+McLaren,Artura,McLaren Artura Spider,2024,Petrol,Automatic,2993.0,605.0,330.0,1460.0,,292400,2026-07-02 11:58:22,342108.0
+Rolls-Royce,Spectre,Rolls-Royce Spectre Spectre,2024,Electric,Automatic,,632.0,250.0,2335.0,,396275,2026-07-02 11:52:56,463641.75
