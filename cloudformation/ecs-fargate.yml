@@ -1,60 +1,173 @@
 AWSTemplateFormatVersion: "2010-09-09"
-Description: Task 07 ECS Fargate deployment for FastAPI automotive agent
+
+Description: >
+  Task 07 ECS Fargate deployment for the FastAPI automotive agent.
+  The public Application Load Balancer runs in existing public subnets,
+  while ECS Fargate tasks run in private subnets with outbound access
+  through a NAT Gateway.
 
 Parameters:
   VpcId:
-    Type: String
+    Type: AWS::EC2::VPC::Id
     Default: vpc-05f724520455a11b5
+    Description: Existing VPC for the deployment
 
-  SubnetOne:
-    Type: String
+  PublicSubnetOne:
+    Type: AWS::EC2::Subnet::Id
     Default: subnet-0b809b4859881f27e
+    Description: Existing public subnet in us-east-1a for the ALB and NAT Gateway
 
-  SubnetTwo:
-    Type: String
+  PublicSubnetTwo:
+    Type: AWS::EC2::Subnet::Id
     Default: subnet-029d52a653c8b0907
+    Description: Existing public subnet in us-east-1f for the ALB
 
   ImageUri:
     Type: String
-    Default: 654999855057.dkr.ecr.us-east-1.amazonaws.com/task07-agent:v1.0.0
+    Default: 654999855057.dkr.ecr.us-east-1.amazonaws.com/task07-agent:v1.0.4
+    Description: Complete Amazon ECR image URI and tag
 
   AnthropicSecretArn:
     Type: String
-    Description: ARN of Secrets Manager secret task07/anthropic-api-key
+    Description: ARN of the Secrets Manager secret task07/anthropic-api-key
 
 Resources:
+  # ---------------------------------------------------------
+  # Private networking
+  # ---------------------------------------------------------
+
+  PrivateSubnetOne:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref VpcId
+      AvailabilityZone: us-east-1a
+      CidrBlock: 172.31.96.0/24
+      MapPublicIpOnLaunch: false
+      Tags:
+        - Key: Name
+          Value: task07-private-subnet-1a
+
+  PrivateSubnetTwo:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref VpcId
+      AvailabilityZone: us-east-1f
+      CidrBlock: 172.31.97.0/24
+      MapPublicIpOnLaunch: false
+      Tags:
+        - Key: Name
+          Value: task07-private-subnet-1f
+
+  NatGatewayElasticIP:
+    Type: AWS::EC2::EIP
+    Properties:
+      Domain: vpc
+      Tags:
+        - Key: Name
+          Value: task07-nat-eip
+
+  NatGateway:
+    Type: AWS::EC2::NatGateway
+    Properties:
+      AllocationId: !GetAtt NatGatewayElasticIP.AllocationId
+      SubnetId: !Ref PublicSubnetOne
+      Tags:
+        - Key: Name
+          Value: task07-nat-gateway
+
+  PrivateRouteTable:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref VpcId
+      Tags:
+        - Key: Name
+          Value: task07-private-route-table
+
+  PrivateDefaultRoute:
+    Type: AWS::EC2::Route
+    DependsOn:
+      - NatGateway
+    Properties:
+      RouteTableId: !Ref PrivateRouteTable
+      DestinationCidrBlock: 0.0.0.0/0
+      NatGatewayId: !Ref NatGateway
+
+  PrivateSubnetOneRouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref PrivateSubnetOne
+      RouteTableId: !Ref PrivateRouteTable
+
+  PrivateSubnetTwoRouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref PrivateSubnetTwo
+      RouteTableId: !Ref PrivateRouteTable
+
+  # ---------------------------------------------------------
+  # Logging
+  # ---------------------------------------------------------
+
   LogGroup:
     Type: AWS::Logs::LogGroup
     Properties:
       LogGroupName: /ecs/task07-agent
       RetentionInDays: 7
 
+  # ---------------------------------------------------------
+  # ECS cluster
+  # ---------------------------------------------------------
+
   Cluster:
     Type: AWS::ECS::Cluster
     Properties:
       ClusterName: task07-agent-cluster
 
+  # ---------------------------------------------------------
+  # Security groups
+  # ---------------------------------------------------------
+
   ALBSecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
-      GroupDescription: Allow HTTP access to ALB
+      GroupDescription: Allow public HTTP traffic to the Application Load Balancer
       VpcId: !Ref VpcId
       SecurityGroupIngress:
-        - IpProtocol: tcp
+        - Description: Allow HTTP from the internet
+          IpProtocol: tcp
           FromPort: 80
           ToPort: 80
           CidrIp: 0.0.0.0/0
+      SecurityGroupEgress:
+        - Description: Allow outbound traffic from the ALB
+          IpProtocol: -1
+          CidrIp: 0.0.0.0/0
+      Tags:
+        - Key: Name
+          Value: task07-alb-security-group
 
   ECSSecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
-      GroupDescription: Allow ALB to ECS
+      GroupDescription: Allow the ALB to communicate with private ECS tasks
       VpcId: !Ref VpcId
       SecurityGroupIngress:
-        - IpProtocol: tcp
+        - Description: Allow application traffic only from the ALB
+          IpProtocol: tcp
           FromPort: 8000
           ToPort: 8000
           SourceSecurityGroupId: !Ref ALBSecurityGroup
+      SecurityGroupEgress:
+        - Description: Allow ECS tasks to access ECR, AWS services, and Anthropic through NAT
+          IpProtocol: -1
+          CidrIp: 0.0.0.0/0
+      Tags:
+        - Key: Name
+          Value: task07-ecs-security-group
+
+  # ---------------------------------------------------------
+  # Application Load Balancer
+  # ---------------------------------------------------------
 
   LoadBalancer:
     Type: AWS::ElasticLoadBalancingV2::LoadBalancer
@@ -62,11 +175,15 @@ Resources:
       Name: task07-agent-alb
       Scheme: internet-facing
       Type: application
+      IpAddressType: ipv4
       SecurityGroups:
         - !Ref ALBSecurityGroup
       Subnets:
-        - !Ref SubnetOne
-        - !Ref SubnetTwo
+        - !Ref PublicSubnetOne
+        - !Ref PublicSubnetTwo
+      Tags:
+        - Key: Name
+          Value: task07-agent-alb
 
   TargetGroup:
     Type: AWS::ElasticLoadBalancingV2::TargetGroup
@@ -75,13 +192,23 @@ Resources:
       VpcId: !Ref VpcId
       Port: 8000
       Protocol: HTTP
+      ProtocolVersion: HTTP1
       TargetType: ip
+      HealthCheckEnabled: true
       HealthCheckPath: /health
       HealthCheckProtocol: HTTP
+      HealthCheckPort: traffic-port
+      HealthyThresholdCount: 2
+      UnhealthyThresholdCount: 3
+      HealthCheckIntervalSeconds: 30
+      HealthCheckTimeoutSeconds: 5
       Matcher:
-        HttpCode: 200
+        HttpCode: "200"
+      Tags:
+        - Key: Name
+          Value: task07-agent-target-group
 
-  Listener:
+  HttpListener:
     Type: AWS::ElasticLoadBalancingV2::Listener
     Properties:
       LoadBalancerArn: !Ref LoadBalancer
@@ -90,6 +217,10 @@ Resources:
       DefaultActions:
         - Type: forward
           TargetGroupArn: !Ref TargetGroup
+
+  # ---------------------------------------------------------
+  # ECS IAM execution role
+  # ---------------------------------------------------------
 
   TaskExecutionRole:
     Type: AWS::IAM::Role
@@ -100,8 +231,10 @@ Resources:
         Statement:
           - Effect: Allow
             Principal:
-              Service: ecs-tasks.amazonaws.com
-            Action: sts:AssumeRole
+              Service:
+                - ecs-tasks.amazonaws.com
+            Action:
+              - sts:AssumeRole
       ManagedPolicyArns:
         - arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy
       Policies:
@@ -114,14 +247,18 @@ Resources:
                   - secretsmanager:GetSecretValue
                 Resource: !Ref AnthropicSecretArn
 
+  # ---------------------------------------------------------
+  # ECS task definition
+  # ---------------------------------------------------------
+
   TaskDefinition:
     Type: AWS::ECS::TaskDefinition
     Properties:
       Family: task07-agent-task
       RequiresCompatibilities:
         - FARGATE
-      Cpu: 512
-      Memory: 1024
+      Cpu: "512"
+      Memory: "1024"
       NetworkMode: awsvpc
       ExecutionRoleArn: !GetAtt TaskExecutionRole.Arn
       ContainerDefinitions:
@@ -130,6 +267,7 @@ Resources:
           Essential: true
           PortMappings:
             - ContainerPort: 8000
+              HostPort: 8000
               Protocol: tcp
           Secrets:
             - Name: ANTHROPIC_API_KEY
@@ -137,28 +275,40 @@ Resources:
           LogConfiguration:
             LogDriver: awslogs
             Options:
-              awslogs-group: /ecs/task07-agent
+              awslogs-group: !Ref LogGroup
               awslogs-region: us-east-1
               awslogs-stream-prefix: ecs
+
+  # ---------------------------------------------------------
+  # ECS service in private subnets
+  # ---------------------------------------------------------
 
   ECSService:
     Type: AWS::ECS::Service
     DependsOn:
-      - Listener
+      - HttpListener
+      - PrivateDefaultRoute
+      - PrivateSubnetOneRouteTableAssociation
+      - PrivateSubnetTwoRouteTableAssociation
     Properties:
       ServiceName: task07-agent-service
       Cluster: !Ref Cluster
       LaunchType: FARGATE
+      PlatformVersion: LATEST
       DesiredCount: 1
       TaskDefinition: !Ref TaskDefinition
+      HealthCheckGracePeriodSeconds: 60
+      DeploymentConfiguration:
+        MinimumHealthyPercent: 100
+        MaximumPercent: 200
       NetworkConfiguration:
         AwsvpcConfiguration:
-          AssignPublicIp: ENABLED
+          AssignPublicIp: DISABLED
           SecurityGroups:
             - !Ref ECSSecurityGroup
           Subnets:
-            - !Ref SubnetOne
-            - !Ref SubnetTwo
+            - !Ref PrivateSubnetOne
+            - !Ref PrivateSubnetTwo
       LoadBalancers:
         - ContainerName: task07-agent
           ContainerPort: 8000
@@ -166,13 +316,29 @@ Resources:
 
 Outputs:
   LoadBalancerDNS:
-    Description: Public ALB endpoint
+    Description: Public Application Load Balancer DNS name
     Value: !GetAtt LoadBalancer.DNSName
 
+  ApplicationEndpoint:
+    Description: Public application endpoint
+    Value: !Sub "http://${LoadBalancer.DNSName}"
+
   HealthEndpoint:
-    Description: Health check URL
+    Description: Health-check endpoint
     Value: !Sub "http://${LoadBalancer.DNSName}/health"
 
   QueryEndpoint:
-    Description: Query endpoint URL
+    Description: Agent-query endpoint
     Value: !Sub "http://${LoadBalancer.DNSName}/query"
+
+  PrivateSubnetOneId:
+    Description: First private ECS subnet
+    Value: !Ref PrivateSubnetOne
+
+  PrivateSubnetTwoId:
+    Description: Second private ECS subnet
+    Value: !Ref PrivateSubnetTwo
+
+  NatGatewayId:
+    Description: NAT Gateway used by private ECS tasks
+    Value: !Ref NatGateway
