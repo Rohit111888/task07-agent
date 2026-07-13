@@ -1,4 +1,4 @@
-name: Build and Push Docker Image
+name: Build, Test, and Push Docker Image
 
 on:
   push:
@@ -8,10 +8,11 @@ on:
 env:
   AWS_REGION: us-east-1
   ECR_REPOSITORY: task07-agent
-  IMAGE_TAG: v1.0.${{ github.run_number }}
+  SEMANTIC_TAG: v1.0.${{ github.run_number }}
+  SHA_TAG: ${{ github.sha }}
 
 jobs:
-  build-and-push:
+  build-test-and-push:
     runs-on: ubuntu-latest
 
     permissions:
@@ -19,41 +20,64 @@ jobs:
       contents: read
 
     steps:
-      - name: Checkout Repository
+      - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+          cache: pip
 
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Run syntax check
+      - name: Run Python syntax checks
         run: |
           python -m compileall app
 
-      - name: Configure AWS Credentials
+      - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ env.AWS_REGION }}
 
-      - name: Login to Amazon ECR
+      - name: Log in to Amazon ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
 
-      - name: Build Docker Image
+      - name: Build and tag Docker image
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         run: |
-          docker build -t $ECR_REPOSITORY:$IMAGE_TAG .
-          docker tag $ECR_REPOSITORY:$IMAGE_TAG \
-          ${{ steps.login-ecr.outputs.registry }}/$ECR_REPOSITORY:$IMAGE_TAG
+          docker build \
+            --tag $ECR_REGISTRY/$ECR_REPOSITORY:$SEMANTIC_TAG \
+            --tag $ECR_REGISTRY/$ECR_REPOSITORY:$SHA_TAG \
+            .
 
-      - name: Push Docker Image
+      - name: Test Docker container
+        run: |
+          docker run --rm \
+            --entrypoint python \
+            ${{ steps.login-ecr.outputs.registry }}/$ECR_REPOSITORY:$SEMANTIC_TAG \
+            -m compileall app
+
+      - name: Push semantic-version image
         run: |
           docker push \
-          ${{ steps.login-ecr.outputs.registry }}/$ECR_REPOSITORY:$IMAGE_TAG
+            ${{ steps.login-ecr.outputs.registry }}/$ECR_REPOSITORY:$SEMANTIC_TAG
+
+      - name: Push Git SHA image
+        run: |
+          docker push \
+            ${{ steps.login-ecr.outputs.registry }}/$ECR_REPOSITORY:$SHA_TAG
+
+      - name: Display published image tags
+        run: |
+          echo "Semantic version:"
+          echo "${{ steps.login-ecr.outputs.registry }}/$ECR_REPOSITORY:$SEMANTIC_TAG"
+          echo "Git SHA:"
+          echo "${{ steps.login-ecr.outputs.registry }}/$ECR_REPOSITORY:$SHA_TAG"
