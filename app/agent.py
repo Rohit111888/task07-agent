@@ -14,7 +14,7 @@ from app.graph_search import graph_ranked_search
 # Load API key safely from .env
 # ---------------------------------------------------------
 env_path = Path(__file__).with_name(".env")
-load_dotenv(dotenv_path=env_path, override=True)
+load_dotenv(env_path, override=False)
 
 api_key = os.getenv("ANTHROPIC_API_KEY", "").strip()
 
