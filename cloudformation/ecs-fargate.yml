@@ -1,10 +1,11 @@
 AWSTemplateFormatVersion: "2010-09-09"
 
 Description: >
-  Task 07 ECS Fargate deployment for the FastAPI automotive agent.
-  The public Application Load Balancer runs in existing public subnets,
-  while ECS Fargate tasks run in private subnets with outbound access
-  through a NAT Gateway.
+  Task 07 production deployment for the FastAPI automotive AI agent.
+  The internet-facing Application Load Balancer runs in existing public
+  subnets and terminates HTTPS using an ACM certificate. ECS Fargate tasks
+  run in private subnets without public IP addresses and access external
+  services through a NAT Gateway.
 
 Parameters:
   VpcId:
@@ -24,17 +25,29 @@ Parameters:
 
   ImageUri:
     Type: String
-    Default: 654999855057.dkr.ecr.us-east-1.amazonaws.com/task07-agent:v1.0.4
-    Description: Complete Amazon ECR image URI and tag
+    Default: 654999855057.dkr.ecr.us-east-1.amazonaws.com/task07-agent:v1.0.6
+    Description: Complete Amazon ECR image URI including the image tag
 
   AnthropicSecretArn:
     Type: String
-    Description: ARN of the Secrets Manager secret task07/anthropic-api-key
+    Default: arn:aws:secretsmanager:us-east-1:654999855057:secret:task07/anthropic-api-key-LEEcmr
+    Description: ARN of the Secrets Manager secret containing ANTHROPIC_API_KEY
+
+  CertificateArn:
+    Type: String
+    Description: >
+      ARN of the ACM certificate issued for testagent.cciplatform-ai.com.
+      The certificate must exist in us-east-1.
+
+  ApplicationDomainName:
+    Type: String
+    Default: testagent.cciplatform-ai.com
+    Description: DNS hostname configured to point to the Application Load Balancer
 
 Resources:
-  # ---------------------------------------------------------
+  # =========================================================
   # Private networking
-  # ---------------------------------------------------------
+  # =========================================================
 
   PrivateSubnetOne:
     Type: AWS::EC2::Subnet
@@ -46,6 +59,8 @@ Resources:
       Tags:
         - Key: Name
           Value: task07-private-subnet-1a
+        - Key: Project
+          Value: Task07
 
   PrivateSubnetTwo:
     Type: AWS::EC2::Subnet
@@ -57,6 +72,8 @@ Resources:
       Tags:
         - Key: Name
           Value: task07-private-subnet-1f
+        - Key: Project
+          Value: Task07
 
   NatGatewayElasticIP:
     Type: AWS::EC2::EIP
@@ -65,6 +82,8 @@ Resources:
       Tags:
         - Key: Name
           Value: task07-nat-eip
+        - Key: Project
+          Value: Task07
 
   NatGateway:
     Type: AWS::EC2::NatGateway
@@ -74,6 +93,8 @@ Resources:
       Tags:
         - Key: Name
           Value: task07-nat-gateway
+        - Key: Project
+          Value: Task07
 
   PrivateRouteTable:
     Type: AWS::EC2::RouteTable
@@ -82,6 +103,8 @@ Resources:
       Tags:
         - Key: Name
           Value: task07-private-route-table
+        - Key: Project
+          Value: Task07
 
   PrivateDefaultRoute:
     Type: AWS::EC2::Route
@@ -104,70 +127,95 @@ Resources:
       SubnetId: !Ref PrivateSubnetTwo
       RouteTableId: !Ref PrivateRouteTable
 
-  # ---------------------------------------------------------
-  # Logging
-  # ---------------------------------------------------------
+  # =========================================================
+  # CloudWatch logging
+  # =========================================================
 
   LogGroup:
     Type: AWS::Logs::LogGroup
     Properties:
       LogGroupName: /ecs/task07-agent
       RetentionInDays: 7
+      Tags:
+        - Key: Project
+          Value: Task07
 
-  # ---------------------------------------------------------
+  # =========================================================
   # ECS cluster
-  # ---------------------------------------------------------
+  # =========================================================
 
   Cluster:
     Type: AWS::ECS::Cluster
     Properties:
       ClusterName: task07-agent-cluster
+      ClusterSettings:
+        - Name: containerInsights
+          Value: enabled
+      Tags:
+        - Key: Project
+          Value: Task07
 
-  # ---------------------------------------------------------
+  # =========================================================
   # Security groups
-  # ---------------------------------------------------------
+  # =========================================================
 
   ALBSecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
-      GroupDescription: Allow public HTTP traffic to the Application Load Balancer
+      GroupDescription: Allow public HTTP and HTTPS traffic to the ALB
       VpcId: !Ref VpcId
+
       SecurityGroupIngress:
-        - Description: Allow HTTP from the internet
+        - Description: Allow HTTP for redirection to HTTPS
           IpProtocol: tcp
           FromPort: 80
           ToPort: 80
           CidrIp: 0.0.0.0/0
+
+        - Description: Allow HTTPS from the internet
+          IpProtocol: tcp
+          FromPort: 443
+          ToPort: 443
+          CidrIp: 0.0.0.0/0
+
       SecurityGroupEgress:
         - Description: Allow outbound traffic from the ALB
           IpProtocol: -1
           CidrIp: 0.0.0.0/0
+
       Tags:
         - Key: Name
           Value: task07-alb-security-group
+        - Key: Project
+          Value: Task07
 
   ECSSecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
       GroupDescription: Allow the ALB to communicate with private ECS tasks
       VpcId: !Ref VpcId
+
       SecurityGroupIngress:
         - Description: Allow application traffic only from the ALB
           IpProtocol: tcp
           FromPort: 8000
           ToPort: 8000
           SourceSecurityGroupId: !Ref ALBSecurityGroup
+
       SecurityGroupEgress:
         - Description: Allow ECS tasks to access ECR, AWS services, and Anthropic through NAT
           IpProtocol: -1
           CidrIp: 0.0.0.0/0
+
       Tags:
         - Key: Name
           Value: task07-ecs-security-group
+        - Key: Project
+          Value: Task07
 
-  # ---------------------------------------------------------
+  # =========================================================
   # Application Load Balancer
-  # ---------------------------------------------------------
+  # =========================================================
 
   LoadBalancer:
     Type: AWS::ElasticLoadBalancingV2::LoadBalancer
@@ -176,24 +224,39 @@ Resources:
       Scheme: internet-facing
       Type: application
       IpAddressType: ipv4
+
       SecurityGroups:
         - !Ref ALBSecurityGroup
+
       Subnets:
         - !Ref PublicSubnetOne
         - !Ref PublicSubnetTwo
+
+      LoadBalancerAttributes:
+        - Key: deletion_protection.enabled
+          Value: "false"
+
+        - Key: idle_timeout.timeout_seconds
+          Value: "60"
+
+        - Key: routing.http.drop_invalid_header_fields.enabled
+          Value: "true"
+
       Tags:
         - Key: Name
           Value: task07-agent-alb
+        - Key: Project
+          Value: Task07
 
   TargetGroup:
     Type: AWS::ElasticLoadBalancingV2::TargetGroup
     Properties:
-      Name: task07-agent-tg
       VpcId: !Ref VpcId
       Port: 8000
       Protocol: HTTP
       ProtocolVersion: HTTP1
       TargetType: ip
+
       HealthCheckEnabled: true
       HealthCheckPath: /health
       HealthCheckProtocol: HTTP
@@ -202,30 +265,65 @@ Resources:
       UnhealthyThresholdCount: 3
       HealthCheckIntervalSeconds: 30
       HealthCheckTimeoutSeconds: 5
+
       Matcher:
         HttpCode: "200"
+
+      TargetGroupAttributes:
+        - Key: deregistration_delay.timeout_seconds
+          Value: "30"
+
       Tags:
         - Key: Name
           Value: task07-agent-target-group
+        - Key: Project
+          Value: Task07
 
+  # HTTP traffic is redirected to HTTPS.
   HttpListener:
     Type: AWS::ElasticLoadBalancingV2::Listener
     Properties:
       LoadBalancerArn: !Ref LoadBalancer
       Port: 80
       Protocol: HTTP
+
+      DefaultActions:
+        - Type: redirect
+          RedirectConfig:
+            Protocol: HTTPS
+            Port: "443"
+            Host: "#{host}"
+            Path: "/#{path}"
+            Query: "#{query}"
+            StatusCode: HTTP_301
+
+  # HTTPS terminates at the ALB and forwards HTTP internally
+  # to the private ECS tasks on port 8000.
+  HttpsListener:
+    Type: AWS::ElasticLoadBalancingV2::Listener
+    Properties:
+      LoadBalancerArn: !Ref LoadBalancer
+      Port: 443
+      Protocol: HTTPS
+
+      SslPolicy: ELBSecurityPolicy-TLS13-1-2-2021-06
+
+      Certificates:
+        - CertificateArn: !Ref CertificateArn
+
       DefaultActions:
         - Type: forward
           TargetGroupArn: !Ref TargetGroup
 
-  # ---------------------------------------------------------
-  # ECS IAM execution role
-  # ---------------------------------------------------------
+  # =========================================================
+  # ECS task execution IAM role
+  # =========================================================
 
   TaskExecutionRole:
     Type: AWS::IAM::Role
     Properties:
       RoleName: task07-agent-execution-role
+
       AssumeRolePolicyDocument:
         Version: "2012-10-17"
         Statement:
@@ -235,61 +333,99 @@ Resources:
                 - ecs-tasks.amazonaws.com
             Action:
               - sts:AssumeRole
+
       ManagedPolicyArns:
         - arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy
+
       Policies:
         - PolicyName: task07-secret-access
           PolicyDocument:
             Version: "2012-10-17"
             Statement:
-              - Effect: Allow
+              - Sid: ReadAnthropicSecret
+                Effect: Allow
                 Action:
                   - secretsmanager:GetSecretValue
                 Resource: !Ref AnthropicSecretArn
 
-  # ---------------------------------------------------------
+      Tags:
+        - Key: Project
+          Value: Task07
+
+  # =========================================================
   # ECS task definition
-  # ---------------------------------------------------------
+  # =========================================================
 
   TaskDefinition:
     Type: AWS::ECS::TaskDefinition
     Properties:
       Family: task07-agent-task
+
       RequiresCompatibilities:
         - FARGATE
+
       Cpu: "512"
       Memory: "1024"
       NetworkMode: awsvpc
       ExecutionRoleArn: !GetAtt TaskExecutionRole.Arn
+
+      RuntimePlatform:
+        CpuArchitecture: X86_64
+        OperatingSystemFamily: LINUX
+
       ContainerDefinitions:
         - Name: task07-agent
           Image: !Ref ImageUri
           Essential: true
+
           PortMappings:
             - ContainerPort: 8000
               HostPort: 8000
               Protocol: tcp
+              Name: http-8000
+              AppProtocol: http
+
           Secrets:
             - Name: ANTHROPIC_API_KEY
               ValueFrom: !Sub "${AnthropicSecretArn}:ANTHROPIC_API_KEY::"
+
           LogConfiguration:
             LogDriver: awslogs
             Options:
               awslogs-group: !Ref LogGroup
-              awslogs-region: us-east-1
+              awslogs-region: !Ref AWS::Region
               awslogs-stream-prefix: ecs
 
-  # ---------------------------------------------------------
+          HealthCheck:
+            Command:
+              - CMD-SHELL
+              - >
+                python -c
+                "import urllib.request;
+                urllib.request.urlopen('http://localhost:8000/health',
+                timeout=5)"
+                || exit 1
+            Interval: 30
+            Timeout: 5
+            Retries: 3
+            StartPeriod: 60
+
+      Tags:
+        - Key: Project
+          Value: Task07
+
+  # =========================================================
   # ECS service in private subnets
-  # ---------------------------------------------------------
+  # =========================================================
 
   ECSService:
     Type: AWS::ECS::Service
     DependsOn:
-      - HttpListener
+      - HttpsListener
       - PrivateDefaultRoute
       - PrivateSubnetOneRouteTableAssociation
       - PrivateSubnetTwoRouteTableAssociation
+
     Properties:
       ServiceName: task07-agent-service
       Cluster: !Ref Cluster
@@ -297,39 +433,65 @@ Resources:
       PlatformVersion: LATEST
       DesiredCount: 1
       TaskDefinition: !Ref TaskDefinition
+
       HealthCheckGracePeriodSeconds: 60
+
       DeploymentConfiguration:
         MinimumHealthyPercent: 100
         MaximumPercent: 200
+        DeploymentCircuitBreaker:
+          Enable: true
+          Rollback: true
+
       NetworkConfiguration:
         AwsvpcConfiguration:
           AssignPublicIp: DISABLED
+
           SecurityGroups:
             - !Ref ECSSecurityGroup
+
           Subnets:
             - !Ref PrivateSubnetOne
             - !Ref PrivateSubnetTwo
+
       LoadBalancers:
         - ContainerName: task07-agent
           ContainerPort: 8000
           TargetGroupArn: !Ref TargetGroup
+
+      EnableECSManagedTags: true
+      PropagateTags: SERVICE
+
+      Tags:
+        - Key: Name
+          Value: task07-agent-service
+        - Key: Project
+          Value: Task07
 
 Outputs:
   LoadBalancerDNS:
     Description: Public Application Load Balancer DNS name
     Value: !GetAtt LoadBalancer.DNSName
 
-  ApplicationEndpoint:
-    Description: Public application endpoint
-    Value: !Sub "http://${LoadBalancer.DNSName}"
+  SecureApplicationEndpoint:
+    Description: Secure public application endpoint
+    Value: !Sub "https://${ApplicationDomainName}"
 
-  HealthEndpoint:
-    Description: Health-check endpoint
-    Value: !Sub "http://${LoadBalancer.DNSName}/health"
+  SecureHealthEndpoint:
+    Description: Secure health-check endpoint
+    Value: !Sub "https://${ApplicationDomainName}/health"
 
-  QueryEndpoint:
-    Description: Agent-query endpoint
-    Value: !Sub "http://${LoadBalancer.DNSName}/query"
+  SecureQueryEndpoint:
+    Description: Secure agent-query endpoint
+    Value: !Sub "https://${ApplicationDomainName}/query"
+
+  SecureSwaggerEndpoint:
+    Description: Secure FastAPI Swagger documentation endpoint
+    Value: !Sub "https://${ApplicationDomainName}/docs"
+
+  HttpRedirectEndpoint:
+    Description: HTTP endpoint that redirects to HTTPS
+    Value: !Sub "http://${ApplicationDomainName}"
 
   PrivateSubnetOneId:
     Description: First private ECS subnet
@@ -342,3 +504,11 @@ Outputs:
   NatGatewayId:
     Description: NAT Gateway used by private ECS tasks
     Value: !Ref NatGateway
+
+  ECSClusterName:
+    Description: ECS cluster name
+    Value: !Ref Cluster
+
+  ECSServiceName:
+    Description: ECS service name
+    Value: !GetAtt ECSService.Name

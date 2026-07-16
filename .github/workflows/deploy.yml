@@ -16,7 +16,6 @@ jobs:
     runs-on: ubuntu-latest
 
     permissions:
-      id-token: write
       contents: read
 
     steps:
@@ -59,25 +58,50 @@ jobs:
             .
 
       - name: Test Docker container
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         run: |
-          docker run --rm \
-            --entrypoint python \
-            ${{ steps.login-ecr.outputs.registry }}/$ECR_REPOSITORY:$SEMANTIC_TAG \
-            -m compileall app
+          docker run -d \
+            --name task07-test \
+            -p 8000:8000 \
+            -e ANTHROPIC_API_KEY=dummy-test-key \
+            $ECR_REGISTRY/$ECR_REPOSITORY:$SEMANTIC_TAG
+
+          for i in {1..12}; do
+            if curl --fail http://localhost:8000/health; then
+              echo "Container health test passed"
+              docker rm -f task07-test
+              exit 0
+            fi
+
+            echo "Waiting for container..."
+            sleep 5
+          done
+
+          echo "Container failed to become healthy"
+          docker logs task07-test
+          docker rm -f task07-test
+          exit 1
 
       - name: Push semantic-version image
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         run: |
           docker push \
-            ${{ steps.login-ecr.outputs.registry }}/$ECR_REPOSITORY:$SEMANTIC_TAG
+            $ECR_REGISTRY/$ECR_REPOSITORY:$SEMANTIC_TAG
 
       - name: Push Git SHA image
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         run: |
           docker push \
-            ${{ steps.login-ecr.outputs.registry }}/$ECR_REPOSITORY:$SHA_TAG
+            $ECR_REGISTRY/$ECR_REPOSITORY:$SHA_TAG
 
       - name: Display published image tags
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         run: |
           echo "Semantic version:"
-          echo "${{ steps.login-ecr.outputs.registry }}/$ECR_REPOSITORY:$SEMANTIC_TAG"
+          echo "$ECR_REGISTRY/$ECR_REPOSITORY:$SEMANTIC_TAG"
           echo "Git SHA:"
-          echo "${{ steps.login-ecr.outputs.registry }}/$ECR_REPOSITORY:$SHA_TAG"
+          echo "$ECR_REGISTRY/$ECR_REPOSITORY:$SHA_TAG"
