@@ -21,6 +21,7 @@ screenshots/
 
 .vscode/
 .idea/
+.venv/
 
 .pytest_cache/
 .mypy_cache/
@@ -28,3 +29,12 @@ screenshots/
 README.md
 TASK07_REPORT.md
 cloudformation/
+
+# Task 08 development and evidence files are not needed at runtime
+tests/
+postman/
+docs/
+scripts/
+requirements-dev.txt
+pytest.ini
+.pytest_cache/

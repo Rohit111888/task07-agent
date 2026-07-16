@@ -1,11 +1,12 @@
 AWSTemplateFormatVersion: "2010-09-09"
 
 Description: >
-  Task 07 production deployment for the FastAPI automotive AI agent.
+  Task 07/08 production deployment for the observable FastAPI automotive AI agent.
   The internet-facing Application Load Balancer runs in existing public
   subnets and terminates HTTPS using an ACM certificate. ECS Fargate tasks
   run in private subnets without public IP addresses and access external
-  services through a NAT Gateway.
+  services through a NAT Gateway. Structured logs create CloudWatch metrics,
+  a dashboard, and an SNS-backed error-rate alarm.
 
 Parameters:
   VpcId:
@@ -43,6 +44,24 @@ Parameters:
     Type: String
     Default: testagent.cciplatform-ai.com
     Description: DNS hostname configured to point to the Application Load Balancer
+
+  AlarmEmail:
+    Type: String
+    Default: ""
+    AllowedPattern: "^$|^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$"
+    ConstraintDescription: Enter a valid email address or leave the value empty
+    Description: Email address that receives the Task 08 SNS alarm notification
+
+  EnableTestErrorEndpoint:
+    Type: String
+    Default: "false"
+    AllowedValues:
+      - "true"
+      - "false"
+    Description: Temporarily set to true only while demonstrating the alarm
+
+Conditions:
+  HasAlarmEmail: !Not [!Equals [!Ref AlarmEmail, ""]]
 
 Resources:
   # =========================================================
@@ -138,7 +157,173 @@ Resources:
       RetentionInDays: 7
       Tags:
         - Key: Project
-          Value: Task07
+          Value: Task08
+
+  RequestCountMetricFilter:
+    Type: AWS::Logs::MetricFilter
+    Properties:
+      LogGroupName: !Ref LogGroup
+      FilterPattern: '{ $.event = "agent_request" }'
+      MetricTransformations:
+        - MetricNamespace: Task08/AutomotiveAgent
+          MetricName: RequestCount
+          MetricValue: "1"
+          Unit: Count
+
+  LatencyMetricFilter:
+    Type: AWS::Logs::MetricFilter
+    Properties:
+      LogGroupName: !Ref LogGroup
+      FilterPattern: '{ $.event = "agent_request" && $.latency_ms = * }'
+      MetricTransformations:
+        - MetricNamespace: Task08/AutomotiveAgent
+          MetricName: RequestLatency
+          MetricValue: $.latency_ms
+          Unit: Milliseconds
+
+  ErrorCountMetricFilter:
+    Type: AWS::Logs::MetricFilter
+    Properties:
+      LogGroupName: !Ref LogGroup
+      FilterPattern: '{ $.event = "agent_request" && $.is_server_error = 1 }'
+      MetricTransformations:
+        - MetricNamespace: Task08/AutomotiveAgent
+          MetricName: ErrorCount
+          MetricValue: "1"
+          DefaultValue: 0
+          Unit: Count
+
+  AlarmTopic:
+    Type: AWS::SNS::Topic
+    Properties:
+      TopicName: task08-agent-alerts
+      DisplayName: Task 08 Agent Alerts
+      Tags:
+        - Key: Project
+          Value: Task08
+
+  AlarmEmailSubscription:
+    Type: AWS::SNS::Subscription
+    Condition: HasAlarmEmail
+    Properties:
+      TopicArn: !Ref AlarmTopic
+      Protocol: email
+      Endpoint: !Ref AlarmEmail
+
+  HighErrorRateAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmName: task08-agent-error-rate-high
+      AlarmDescription: Error rate exceeded 5 percent during a five-minute window
+      ComparisonOperator: GreaterThanThreshold
+      Threshold: 5
+      EvaluationPeriods: 1
+      DatapointsToAlarm: 1
+      TreatMissingData: notBreaching
+      AlarmActions:
+        - !Ref AlarmTopic
+      OKActions:
+        - !Ref AlarmTopic
+      Metrics:
+        - Id: requestcount
+          Label: Request count
+          ReturnData: false
+          MetricStat:
+            Metric:
+              Namespace: Task08/AutomotiveAgent
+              MetricName: RequestCount
+            Period: 300
+            Stat: Sum
+        - Id: errorcount
+          Label: Error count
+          ReturnData: false
+          MetricStat:
+            Metric:
+              Namespace: Task08/AutomotiveAgent
+              MetricName: ErrorCount
+            Period: 300
+            Stat: Sum
+        - Id: errorrate
+          Label: Error rate percentage
+          ReturnData: true
+          Expression: IF(requestcount>0,100*errorcount/requestcount,0)
+
+  ObservabilityDashboard:
+    Type: AWS::CloudWatch::Dashboard
+    Properties:
+      DashboardName: task08-agent-observability
+      DashboardBody: !Sub |
+        {
+          "start": "-PT3H",
+          "periodOverride": "inherit",
+          "widgets": [
+            {
+              "type": "metric",
+              "x": 0,
+              "y": 0,
+              "width": 6,
+              "height": 6,
+              "properties": {
+                "title": "Request Count",
+                "region": "${AWS::Region}",
+                "view": "timeSeries",
+                "stat": "Sum",
+                "period": 300,
+                "metrics": [["Task08/AutomotiveAgent", "RequestCount"]]
+              }
+            },
+            {
+              "type": "metric",
+              "x": 6,
+              "y": 0,
+              "width": 6,
+              "height": 6,
+              "properties": {
+                "title": "Average Request Latency",
+                "region": "${AWS::Region}",
+                "view": "timeSeries",
+                "stat": "Average",
+                "period": 300,
+                "yAxis": {"left": {"label": "Milliseconds", "showUnits": false}},
+                "metrics": [["Task08/AutomotiveAgent", "RequestLatency"]]
+              }
+            },
+            {
+              "type": "metric",
+              "x": 12,
+              "y": 0,
+              "width": 6,
+              "height": 6,
+              "properties": {
+                "title": "Error Rate",
+                "region": "${AWS::Region}",
+                "view": "timeSeries",
+                "period": 300,
+                "yAxis": {"left": {"label": "Percent", "min": 0, "showUnits": false}},
+                "metrics": [
+                  ["Task08/AutomotiveAgent", "RequestCount", {"id": "requests", "stat": "Sum", "visible": false}],
+                  ["Task08/AutomotiveAgent", "ErrorCount", {"id": "errors", "stat": "Sum", "visible": false}],
+                  [{"expression": "IF(requests>0,100*errors/requests,0)", "label": "Error Rate (%)", "id": "error_rate"}]
+                ]
+              }
+            },
+            {
+              "type": "metric",
+              "x": 18,
+              "y": 0,
+              "width": 6,
+              "height": 6,
+              "properties": {
+                "title": "ECS CPU Utilization",
+                "region": "${AWS::Region}",
+                "view": "timeSeries",
+                "stat": "Average",
+                "period": 300,
+                "metrics": [["AWS/ECS", "CPUUtilization", "ClusterName", "${Cluster}", "ServiceName", "${ECSService.Name}"]]
+              }
+            }
+          ]
+        }
 
   # =========================================================
   # ECS cluster
@@ -389,6 +574,12 @@ Resources:
             - Name: ANTHROPIC_API_KEY
               ValueFrom: !Sub "${AnthropicSecretArn}:ANTHROPIC_API_KEY::"
 
+          Environment:
+            - Name: ANTHROPIC_MODEL
+              Value: claude-opus-4-8
+            - Name: ENABLE_TEST_ERROR_ENDPOINT
+              Value: !Ref EnableTestErrorEndpoint
+
           LogConfiguration:
             LogDriver: awslogs
             Options:
@@ -512,3 +703,19 @@ Outputs:
   ECSServiceName:
     Description: ECS service name
     Value: !GetAtt ECSService.Name
+
+  CloudWatchDashboardName:
+    Description: Task 08 observability dashboard name
+    Value: !Ref ObservabilityDashboard
+
+  CloudWatchAlarmName:
+    Description: Error-rate alarm name
+    Value: !Ref HighErrorRateAlarm
+
+  AlarmSNSTopicArn:
+    Description: SNS topic used for alarm notifications
+    Value: !Ref AlarmTopic
+
+  TestErrorEndpoint:
+    Description: Temporary endpoint used only when EnableTestErrorEndpoint is true
+    Value: !Sub "https://${ApplicationDomainName}/test-error"

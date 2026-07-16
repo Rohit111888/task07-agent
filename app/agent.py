@@ -1,34 +1,57 @@
-from pathlib import Path
-from dotenv import load_dotenv
-from anthropic import Anthropic
-import os
-import json
+"""Anthropic tool-calling agent with observability metadata."""
+
+from __future__ import annotations
+
 import contextlib
 import io
+import json
+import os
+from dataclasses import dataclass
+from pathlib import Path
+from typing import Any
+
+from anthropic import Anthropic
+from dotenv import load_dotenv
 
 from app.db_tools import query_cars
 from app.graph_search import graph_ranked_search
 
 
-# ---------------------------------------------------------
-# Load API key safely from .env
-# ---------------------------------------------------------
 env_path = Path(__file__).with_name(".env")
 load_dotenv(env_path, override=False)
 
-api_key = os.getenv("ANTHROPIC_API_KEY", "").strip()
-
-if not api_key:
-    raise ValueError("ANTHROPIC_API_KEY not found. Check your .env file.")
-
-client = Anthropic(api_key=api_key)
-
-MODEL = "claude-opus-4-8"
+MODEL = os.getenv("ANTHROPIC_MODEL", "claude-opus-4-8")
+_client: Anthropic | None = None
 
 
-# ---------------------------------------------------------
-# Tool definitions for Anthropic tool-calling
-# ---------------------------------------------------------
+@dataclass(frozen=True)
+class AgentRun:
+    """Answer and telemetry collected across one agent execution."""
+
+    answer: str
+    model_used: str
+    input_tokens: int
+    output_tokens: int
+    tool_calls_made: list[str]
+
+    @property
+    def total_tokens(self) -> int:
+        return self.input_tokens + self.output_tokens
+
+
+def get_client() -> Anthropic:
+    """Create the Anthropic client lazily so health checks need no API call."""
+    global _client
+
+    if _client is None:
+        api_key = os.getenv("ANTHROPIC_API_KEY", "").strip()
+        if not api_key:
+            raise RuntimeError("ANTHROPIC_API_KEY is not configured")
+        _client = Anthropic(api_key=api_key)
+
+    return _client
+
+
 tools = [
     {
         "name": "query_database",
@@ -88,21 +111,13 @@ tools = [
 ]
 
 
-# ---------------------------------------------------------
-# Tool execution functions
-# ---------------------------------------------------------
-def clean_json(data):
-    """
-    Converts pandas/numpy values into JSON-safe values.
-    """
+def clean_json(data: Any) -> Any:
+    """Convert pandas and NumPy values into JSON-safe values."""
     return json.loads(json.dumps(data, default=str))
 
 
-def execute_tool(tool_name, tool_input):
-    """
-    Executes the tool selected by Claude.
-    """
-
+def execute_tool(tool_name: str, tool_input: dict[str, Any]) -> dict[str, Any]:
+    """Execute a tool selected by the model."""
     if tool_name == "query_database":
         brand = tool_input.get("brand")
         min_hp = tool_input.get("min_hp")
@@ -117,7 +132,6 @@ def execute_tool(tool_name, tool_input):
             fuel_type=fuel_type,
             top_n=top_n,
         )
-
         records = results_df.fillna("").to_dict(orient="records")
 
         return clean_json(
@@ -139,7 +153,6 @@ def execute_tool(tool_name, tool_input):
         query = tool_input.get("query", "")
         top_k = tool_input.get("top_k", 5)
 
-        # Suppress graph-building debug prints from build_graph.py
         with contextlib.redirect_stdout(io.StringIO()):
             results = graph_ranked_search(query=query, top_k=top_k)
 
@@ -156,60 +169,52 @@ def execute_tool(tool_name, tool_input):
     return {"error": f"Unknown tool: {tool_name}"}
 
 
-def serialize_content_blocks(content_blocks):
-    """
-    Converts Anthropic content block objects into dictionaries
-    so they can be sent back in the next API call.
-    """
+def serialize_content_blocks(content_blocks: list[Any]) -> list[Any]:
+    """Convert Anthropic content blocks into dictionaries for the next call."""
     serialized = []
-
     for block in content_blocks:
-        if hasattr(block, "model_dump"):
-            serialized.append(block.model_dump())
-        else:
-            serialized.append(block)
-
+        serialized.append(block.model_dump() if hasattr(block, "model_dump") else block)
     return serialized
 
 
-# ---------------------------------------------------------
-# Agent loop
-# ---------------------------------------------------------
-def run_agent(user_question):
+def _usage(response: Any) -> tuple[int, int]:
+    usage = getattr(response, "usage", None)
+    if usage is None:
+        return 0, 0
+    return (
+        int(getattr(usage, "input_tokens", 0) or 0),
+        int(getattr(usage, "output_tokens", 0) or 0),
+    )
+
+
+def _text_from(response: Any) -> str:
+    return "".join(
+        block.text for block in response.content if getattr(block, "type", None) == "text"
+    )
+
+
+def run_agent_with_metadata(user_question: str) -> AgentRun:
+    """Run the agent and return the answer plus model, token, and tool metadata."""
     system_prompt = """
 You are a domain AI agent for an automotive analytics dataset.
 
 You have two tools:
 
 1. query_database:
-Use this for direct structured filtering, such as:
-- Ferrari cars above 700 horsepower
-- Porsche vehicles
-- hybrid vehicles
-- cars within a horsepower range
+Use this for direct structured filtering, such as Ferrari cars above 700
+horsepower, Porsche vehicles, hybrid vehicles, or cars in a horsepower range.
 
 2. graph_ranked_search:
-Use this for graph-based retrieval, such as:
-- important vehicles
-- influential vehicles
-- central vehicles
-- similar vehicles
-- graph-ranked search
-- PageRank or centrality-based ranking
+Use this for graph-based retrieval, including important, influential, central,
+similar, graph-ranked, PageRank, or centrality-based vehicle questions.
 
-When you receive tool results, write a clear professional answer.
-Mention which tool was used and why.
-For graph-ranked results, explain that PageRank centrality was used over the automotive similarity graph.
-Keep the answer concise but complete.
+When you receive tool results, write a clear professional answer. Mention which
+tool was used and why. For graph-ranked results, explain that PageRank centrality
+was used over the automotive similarity graph. Keep the answer concise but complete.
 """
 
-    messages = [
-        {
-            "role": "user",
-            "content": user_question,
-        }
-    ]
-
+    messages: list[dict[str, Any]] = [{"role": "user", "content": user_question}]
+    client = get_client()
     response = client.messages.create(
         model=MODEL,
         max_tokens=1000,
@@ -218,46 +223,40 @@ Keep the answer concise but complete.
         messages=messages,
     )
 
+    input_tokens, output_tokens = _usage(response)
+    model_used = str(getattr(response, "model", MODEL) or MODEL)
     tool_results = []
+    tool_calls_made: list[str] = []
 
     for block in response.content:
         if block.type == "tool_use":
-            print(f"\nClaude selected tool: {block.name}")
-            print(f"Tool input: {block.input}")
-
+            tool_calls_made.append(block.name)
             result = execute_tool(block.name, block.input)
-
             tool_results.append(
                 {
                     "type": "tool_result",
                     "tool_use_id": block.id,
-                    "content": json.dumps(result, indent=2),
+                    "content": json.dumps(result, separators=(",", ":")),
                 }
             )
 
-    # If Claude answered without using a tool
     if not tool_results:
-        final_text = ""
+        return AgentRun(
+            answer=_text_from(response),
+            model_used=model_used,
+            input_tokens=input_tokens,
+            output_tokens=output_tokens,
+            tool_calls_made=tool_calls_made,
+        )
 
-        for block in response.content:
-            if block.type == "text":
-                final_text += block.text
-
-        return final_text
-
-    # Send tool results back to Claude
-    messages.append(
-        {
-            "role": "assistant",
-            "content": serialize_content_blocks(response.content),
-        }
-    )
-
-    messages.append(
-        {
-            "role": "user",
-            "content": tool_results,
-        }
+    messages.extend(
+        [
+            {
+                "role": "assistant",
+                "content": serialize_content_blocks(response.content),
+            },
+            {"role": "user", "content": tool_results},
+        ]
     )
 
     final_response = client.messages.create(
@@ -267,14 +266,20 @@ Keep the answer concise but complete.
         tools=tools,
         messages=messages,
     )
+    final_input, final_output = _usage(final_response)
 
-    final_text = ""
+    return AgentRun(
+        answer=_text_from(final_response),
+        model_used=str(getattr(final_response, "model", model_used) or model_used),
+        input_tokens=input_tokens + final_input,
+        output_tokens=output_tokens + final_output,
+        tool_calls_made=tool_calls_made,
+    )
 
-    for block in final_response.content:
-        if block.type == "text":
-            final_text += block.text
 
-    return final_text
+def run_agent(user_question: str) -> str:
+    """Backward-compatible interface used by the original Task 07 CLI."""
+    return run_agent_with_metadata(user_question).answer
 
 
 if __name__ == "__main__":
@@ -283,12 +288,8 @@ if __name__ == "__main__":
 
     while True:
         question = input("\nAsk a question: ")
-
         if question.lower().strip() == "exit":
             break
-
-        answer = run_agent(question)
-
         print("\nClaude Final Response")
         print("-" * 40)
-        print(answer)
+        print(run_agent(question))

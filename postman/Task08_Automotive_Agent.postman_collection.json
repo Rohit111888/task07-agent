@@ -1,0 +1,114 @@
+{
+  "info": {
+    "_postman_id": "8c439fb5-aaf6-40a3-a56f-1a948ff23afb",
+    "name": "Task 08 - Observable Automotive Agent",
+    "description": "The same ten production integration cases covered by tests/test_live_endpoint.py.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('Response time is within the configured limit', function () {",
+          "  pm.expect(pm.response.responseTime).to.be.below(Number(pm.collectionVariables.get('max_response_ms')));",
+          "});",
+          "pm.test('A request ID is returned', function () {",
+          "  pm.expect(pm.response.headers.get('X-Request-ID')).to.exist;",
+          "});"
+        ]
+      }
+    }
+  ],
+  "item": [
+    {
+      "name": "01 - Health endpoint",
+      "event": [{"listen": "test", "script": {"type": "text/javascript", "exec": [
+        "pm.test('Status is 200', function () { pm.response.to.have.status(200); });",
+        "pm.test('Service is healthy', function () { pm.expect(pm.response.json()).to.deep.equal({status: 'healthy'}); });"
+      ]}}],
+      "request": {"method": "GET", "header": [], "url": {"raw": "{{base_url}}/health", "host": ["{{base_url}}"], "path": ["health"]}}
+    },
+    {
+      "name": "02 - Root endpoint",
+      "event": [{"listen": "test", "script": {"type": "text/javascript", "exec": [
+        "pm.test('Status is 200', function () { pm.response.to.have.status(200); });",
+        "pm.test('Root schema is valid', function () { const b = pm.response.json(); pm.expect(b.message).to.be.a('string'); pm.expect(b.docs).to.eql('/docs'); });"
+      ]}}],
+      "request": {"method": "GET", "header": [], "url": {"raw": "{{base_url}}/", "host": ["{{base_url}}"], "path": [""]}}
+    },
+    {
+      "name": "03 - Ferrari happy path",
+      "event": [{"listen": "test", "script": {"type": "text/javascript", "exec": [
+        "pm.test('Status is 200', function () { pm.response.to.have.status(200); });",
+        "pm.test('Answer schema and domain result are valid', function () { const b = pm.response.json(); pm.expect(b.question).to.eql('Which Ferrari cars have more than 700 horsepower?'); pm.expect(b.answer).to.be.a('string').and.not.empty; pm.expect(b.answer.toLowerCase()).to.include('ferrari'); pm.expect(b.request_id).to.be.a('string').and.not.empty; pm.expect(b.request_id).to.eql(pm.response.headers.get('X-Request-ID')); });"
+      ]}}],
+      "request": {"method": "POST", "header": [{"key": "Content-Type", "value": "application/json"}], "body": {"mode": "raw", "raw": "{\n  \"question\": \"Which Ferrari cars have more than 700 horsepower?\"\n}", "options": {"raw": {"language": "json"}}}, "url": {"raw": "{{base_url}}/query", "host": ["{{base_url}}"], "path": ["query"]}}
+    },
+    {
+      "name": "04 - Graph-ranked Porsche query",
+      "event": [{"listen": "test", "script": {"type": "text/javascript", "exec": [
+        "pm.test('Status is 200', function () { pm.response.to.have.status(200); });",
+        "pm.test('PageRank answer is returned', function () { const b = pm.response.json(); pm.expect(b.answer).to.be.a('string').and.not.empty; pm.expect(b.answer.toLowerCase()).to.include('pagerank'); pm.expect(b.request_id).to.be.a('string').and.not.empty; });"
+      ]}}],
+      "request": {"method": "POST", "header": [{"key": "Content-Type", "value": "application/json"}], "body": {"mode": "raw", "raw": "{\n  \"question\": \"What are the five most important Porsche cars in the graph?\"\n}", "options": {"raw": {"language": "json"}}}, "url": {"raw": "{{base_url}}/query", "host": ["{{base_url}}"], "path": ["query"]}}
+    },
+    {
+      "name": "05 - Electric vehicle edge case",
+      "event": [{"listen": "test", "script": {"type": "text/javascript", "exec": [
+        "pm.test('Status is 200', function () { pm.response.to.have.status(200); });",
+        "pm.test('Non-empty answer is returned', function () { const b = pm.response.json(); pm.expect(b.answer).to.be.a('string').and.not.empty; pm.expect(b.request_id).to.be.a('string').and.not.empty; });"
+      ]}}],
+      "request": {"method": "POST", "header": [{"key": "Content-Type", "value": "application/json"}], "body": {"mode": "raw", "raw": "{\n  \"question\": \"List up to three electric vehicles in the dataset.\"\n}", "options": {"raw": {"language": "json"}}}, "url": {"raw": "{{base_url}}/query", "host": ["{{base_url}}"], "path": ["query"]}}
+    },
+    {
+      "name": "06 - No matching brand edge case",
+      "event": [{"listen": "test", "script": {"type": "text/javascript", "exec": [
+        "pm.test('Status is 200', function () { pm.response.to.have.status(200); });",
+        "pm.test('No-match case is handled cleanly', function () { const b = pm.response.json(); pm.expect(b.answer).to.be.a('string').and.not.empty; pm.expect(b.request_id).to.be.a('string').and.not.empty; });"
+      ]}}],
+      "request": {"method": "POST", "header": [{"key": "Content-Type", "value": "application/json"}], "body": {"mode": "raw", "raw": "{\n  \"question\": \"List Dacia vehicles with at least 900 horsepower.\"\n}", "options": {"raw": {"language": "json"}}}, "url": {"raw": "{{base_url}}/query", "host": ["{{base_url}}"], "path": ["query"]}}
+    },
+    {
+      "name": "07 - Empty question",
+      "event": [{"listen": "test", "script": {"type": "text/javascript", "exec": [
+        "pm.test('Status is 422', function () { pm.response.to.have.status(422); });",
+        "pm.test('Validation detail is returned', function () { pm.expect(pm.response.json().detail).to.be.an('array').and.not.empty; });"
+      ]}}],
+      "request": {"method": "POST", "header": [{"key": "Content-Type", "value": "application/json"}], "body": {"mode": "raw", "raw": "{\n  \"question\": \"\"\n}", "options": {"raw": {"language": "json"}}}, "url": {"raw": "{{base_url}}/query", "host": ["{{base_url}}"], "path": ["query"]}}
+    },
+    {
+      "name": "08 - Whitespace-only question",
+      "event": [{"listen": "test", "script": {"type": "text/javascript", "exec": [
+        "pm.test('Status is 400', function () { pm.response.to.have.status(400); });",
+        "pm.test('Blank-input message is returned', function () { pm.expect(pm.response.json().detail).to.eql('Question must not be blank'); });"
+      ]}}],
+      "request": {"method": "POST", "header": [{"key": "Content-Type", "value": "application/json"}], "body": {"mode": "raw", "raw": "{\n  \"question\": \"   \"\n}", "options": {"raw": {"language": "json"}}}, "url": {"raw": "{{base_url}}/query", "host": ["{{base_url}}"], "path": ["query"]}}
+    },
+    {
+      "name": "09 - Very long question",
+      "event": [
+        {"listen": "prerequest", "script": {"type": "text/javascript", "exec": ["pm.collectionVariables.set('very_long_question', 'x'.repeat(4001));"]}},
+        {"listen": "test", "script": {"type": "text/javascript", "exec": [
+          "pm.test('Status is 422', function () { pm.response.to.have.status(422); });",
+          "pm.test('Length validation detail is returned', function () { pm.expect(pm.response.json().detail).to.be.an('array').and.not.empty; });"
+        ]}}
+      ],
+      "request": {"method": "POST", "header": [{"key": "Content-Type", "value": "application/json"}], "body": {"mode": "raw", "raw": "{\n  \"question\": \"{{very_long_question}}\"\n}", "options": {"raw": {"language": "json"}}}, "url": {"raw": "{{base_url}}/query", "host": ["{{base_url}}"], "path": ["query"]}}
+    },
+    {
+      "name": "10 - Malformed JSON",
+      "event": [{"listen": "test", "script": {"type": "text/javascript", "exec": [
+        "pm.test('Status is 422', function () { pm.response.to.have.status(422); });",
+        "pm.test('JSON parsing detail is returned', function () { pm.expect(pm.response.json().detail).to.be.an('array').and.not.empty; });"
+      ]}}],
+      "request": {"method": "POST", "header": [{"key": "Content-Type", "value": "application/json"}], "body": {"mode": "raw", "raw": "{\"question\":", "options": {"raw": {"language": "json"}}}, "url": {"raw": "{{base_url}}/query", "host": ["{{base_url}}"], "path": ["query"]}}
+    }
+  ],
+  "variable": [
+    {"key": "base_url", "value": "https://testagent.cciplatform-ai.com", "type": "string"},
+    {"key": "max_response_ms", "value": "120000", "type": "string"},
+    {"key": "very_long_question", "value": "", "type": "string"}
+  ]
+}

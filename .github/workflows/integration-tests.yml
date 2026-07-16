@@ -1,0 +1,51 @@
+name: Task 08 Live Integration Tests
+
+on:
+  workflow_dispatch:
+    inputs:
+      base_url:
+        description: Deployed HTTPS base URL
+        required: true
+        default: https://testagent.cciplatform-ai.com
+
+jobs:
+  pytest-and-postman:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install test dependencies
+        run: pip install -r requirements-dev.txt
+
+      - name: Run ten Pytest integration tests
+        run: python -m pytest tests/test_live_endpoint.py -v --base-url "${{ inputs.base_url }}"
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Run the ten-request Postman collection
+        run: |
+          mkdir -p postman/results
+          npx --yes newman run postman/Task08_Automotive_Agent.postman_collection.json \
+            -e postman/Task08_Live.postman_environment.json \
+            --env-var base_url="${{ inputs.base_url }}" \
+            --reporters cli,json \
+            --reporter-json-export postman/results/newman-results.json
+
+      - name: Upload test evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: task08-test-results
+          path: postman/results/
