@@ -7,6 +7,7 @@ import requests
 
 
 def pytest_addoption(parser):
+    """Register command-line options used by the live endpoint tests."""
     parser.addoption(
         "--base-url",
         action="store",
@@ -17,21 +18,25 @@ def pytest_addoption(parser):
 
 @pytest.fixture(scope="session")
 def base_url(request):
+    """Return the normalized base URL for the live API."""
     return request.config.getoption("--base-url").rstrip("/")
 
 
 @pytest.fixture(scope="session")
 def request_timeout():
+    """Return the configured HTTP request timeout in seconds."""
     return float(os.getenv("REQUEST_TIMEOUT_SECONDS", "120"))
 
 
 @pytest.fixture(scope="session")
 def max_response_seconds():
+    """Return the maximum acceptable API response time in seconds."""
     return float(os.getenv("MAX_RESPONSE_SECONDS", "120"))
 
 
 @pytest.fixture(scope="session")
 def http_session():
+    """Provide a reusable HTTP session for live endpoint tests."""
     session = requests.Session()
     session.headers.update({"User-Agent": "task08-pytest-integration/1.0"})
     yield session

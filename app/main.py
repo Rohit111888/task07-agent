@@ -22,16 +22,21 @@ app = FastAPI(title="Task 08 Observable Automotive AI Agent", version="2.0.0")
 
 
 class QueryRequest(BaseModel):
+    """Represent a validated automotive question submitted to the API."""
+
     question: str = Field(min_length=1, max_length=MAX_QUERY_LENGTH)
 
 
 class QueryResponse(BaseModel):
+    """Represent a successful response returned by the automotive agent."""
+
     question: str
     answer: str
     request_id: str
 
 
 def _default_metadata() -> dict[str, Any]:
+    """Return default observability metadata for a new HTTP request."""
     return {
         "model_used": "none",
         "input_tokens": 0,

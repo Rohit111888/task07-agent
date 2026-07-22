@@ -1,3 +1,5 @@
+"""Build the automotive similarity graph used by graph-ranked search."""
+
 import pandas as pd
 import networkx as nx
 from pathlib import Path

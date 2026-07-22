@@ -36,6 +36,7 @@ class AgentRun:
 
     @property
     def total_tokens(self) -> int:
+        """Return the total number of input and output tokens used."""
         return self.input_tokens + self.output_tokens
 
 
@@ -65,7 +66,10 @@ tools = [
             "properties": {
                 "brand": {
                     "type": "string",
-                    "description": "Vehicle brand such as Ferrari, Porsche, BMW, Audi, Mercedes-Benz.",
+                    "description": (
+                        "Vehicle brand such as Ferrari, Porsche, BMW, Audi, "
+                        "Mercedes-Benz."
+                    ),
                 },
                 "min_hp": {
                     "type": "integer",
@@ -77,7 +81,9 @@ tools = [
                 },
                 "fuel_type": {
                     "type": "string",
-                    "description": "Fuel type such as Petrol, Diesel, Hybrid, Electric.",
+                    "description": (
+                        "Fuel type such as Petrol, Diesel, Hybrid, Electric."
+                    ),
                 },
                 "top_n": {
                     "type": "integer",
@@ -89,9 +95,9 @@ tools = [
     {
         "name": "graph_ranked_search",
         "description": (
-            "Search the automotive similarity graph and rank results using graph centrality, "
-            "especially PageRank. Use this for questions about important, influential, central, "
-            "similar, or graph-ranked vehicles."
+            "Search the automotive similarity graph and rank results using graph "
+            "centrality, especially PageRank. Use this for questions about "
+            "important, influential, central, similar, or graph-ranked vehicles."
         ),
         "input_schema": {
             "type": "object",
@@ -116,7 +122,10 @@ def clean_json(data: Any) -> Any:
     return json.loads(json.dumps(data, default=str))
 
 
-def execute_tool(tool_name: str, tool_input: dict[str, Any]) -> dict[str, Any]:
+def execute_tool(
+    tool_name: str,
+    tool_input: dict[str, Any],
+) -> dict[str, Any]:
     """Execute a tool selected by the model."""
     if tool_name == "query_database":
         brand = tool_input.get("brand")
@@ -160,7 +169,9 @@ def execute_tool(tool_name: str, tool_input: dict[str, Any]) -> dict[str, Any]:
             {
                 "tool_used": "graph_ranked_search",
                 "query": query,
-                "ranking_signal": "PageRank centrality over automotive similarity graph",
+                "ranking_signal": (
+                    "PageRank centrality over automotive similarity graph"
+                ),
                 "result_count": len(results),
                 "results": results,
             }
@@ -172,15 +183,22 @@ def execute_tool(tool_name: str, tool_input: dict[str, Any]) -> dict[str, Any]:
 def serialize_content_blocks(content_blocks: list[Any]) -> list[Any]:
     """Convert Anthropic content blocks into dictionaries for the next call."""
     serialized = []
+
     for block in content_blocks:
-        serialized.append(block.model_dump() if hasattr(block, "model_dump") else block)
+        serialized.append(
+            block.model_dump() if hasattr(block, "model_dump") else block
+        )
+
     return serialized
 
 
 def _usage(response: Any) -> tuple[int, int]:
+    """Extract input and output token counts from an Anthropic response."""
     usage = getattr(response, "usage", None)
+
     if usage is None:
         return 0, 0
+
     return (
         int(getattr(usage, "input_tokens", 0) or 0),
         int(getattr(usage, "output_tokens", 0) or 0),
@@ -188,8 +206,11 @@ def _usage(response: Any) -> tuple[int, int]:
 
 
 def _text_from(response: Any) -> str:
+    """Combine all text content blocks from an Anthropic response."""
     return "".join(
-        block.text for block in response.content if getattr(block, "type", None) == "text"
+        block.text
+        for block in response.content
+        if getattr(block, "type", None) == "text"
     )
 
 
@@ -213,8 +234,15 @@ tool was used and why. For graph-ranked results, explain that PageRank centralit
 was used over the automotive similarity graph. Keep the answer concise but complete.
 """
 
-    messages: list[dict[str, Any]] = [{"role": "user", "content": user_question}]
+    messages: list[dict[str, Any]] = [
+        {
+            "role": "user",
+            "content": user_question,
+        }
+    ]
+
     client = get_client()
+
     response = client.messages.create(
         model=MODEL,
         max_tokens=1000,
@@ -232,11 +260,15 @@ was used over the automotive similarity graph. Keep the answer concise but compl
         if block.type == "tool_use":
             tool_calls_made.append(block.name)
             result = execute_tool(block.name, block.input)
+
             tool_results.append(
                 {
                     "type": "tool_result",
                     "tool_use_id": block.id,
-                    "content": json.dumps(result, separators=(",", ":")),
+                    "content": json.dumps(
+                        result,
+                        separators=(",", ":"),
+                    ),
                 }
             )
 
@@ -255,7 +287,10 @@ was used over the automotive similarity graph. Keep the answer concise but compl
                 "role": "assistant",
                 "content": serialize_content_blocks(response.content),
             },
-            {"role": "user", "content": tool_results},
+            {
+                "role": "user",
+                "content": tool_results,
+            },
         ]
     )
 
@@ -266,11 +301,14 @@ was used over the automotive similarity graph. Keep the answer concise but compl
         tools=tools,
         messages=messages,
     )
+
     final_input, final_output = _usage(final_response)
 
     return AgentRun(
         answer=_text_from(final_response),
-        model_used=str(getattr(final_response, "model", model_used) or model_used),
+        model_used=str(
+            getattr(final_response, "model", model_used) or model_used
+        ),
         input_tokens=input_tokens + final_input,
         output_tokens=output_tokens + final_output,
         tool_calls_made=tool_calls_made,
@@ -288,8 +326,10 @@ if __name__ == "__main__":
 
     while True:
         question = input("\nAsk a question: ")
+
         if question.lower().strip() == "exit":
             break
+
         print("\nClaude Final Response")
         print("-" * 40)
         print(run_agent(question))

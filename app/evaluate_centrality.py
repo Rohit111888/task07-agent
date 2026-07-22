@@ -1,3 +1,5 @@
+"""Evaluate centrality measures for the automotive similarity graph."""
+
 from app.build_graph import build_car_graph
 import pandas as pd
 

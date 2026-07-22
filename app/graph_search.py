@@ -1,3 +1,5 @@
+"""Provide graph-ranked search over the automotive similarity graph."""
+
 from app.build_graph import build_car_graph
 
 

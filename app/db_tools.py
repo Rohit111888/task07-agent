@@ -1,3 +1,5 @@
+"""Provide automotive dataset loading and structured filtering helpers."""
+
 import pandas as pd
 
 
@@ -6,6 +8,7 @@ from pathlib import Path
 CSV_PATH = Path(__file__).parent / "final_csv.csv"
 
 def load_data():
+    """Load the automotive dataset used by the query tools."""
     return pd.read_csv(CSV_PATH)
 
 
@@ -16,6 +19,7 @@ def query_cars(
     fuel_type=None,
     top_n=10
 ):
+    """Filter automotive records using the supplied query criteria."""
     df = load_data()
 
     if brand:

@@ -1,3 +1,5 @@
+"""Provide structured observability helpers for the FastAPI application."""
+
 import json
 import logging
 import sys
