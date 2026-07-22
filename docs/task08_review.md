@@ -1,4 +1,4 @@
-﻿# Task 08 Testing and QA Review
+# Task 08 Testing and QA Review
 
 ## Review record
 
@@ -27,4 +27,9 @@
 - Alarm demonstration: `task08-agent-error-rate-high` successfully transitioned to `ALARM`
 - Alarm notification: SNS alarm email successfully received
 - Safety verification: `EnableTestErrorEndpoint` restored to `false`, and `/test-error` verified to return HTTP 404
-- Evidence commit: `07de296` — `Add Task 08 test execution results`
+- Evidence and implementation commits:
+  - `07de296` — Add Task 08 test execution results
+  - `5fc3db5` — Add Task 08 observability evidence and final review
+  - `f19f726` — Add Pytest and Newman evidence screenshots
+  - `85acce4` — Add comprehensive Python docstrings
+  - `77a8336` — Remove obsolete Task 7 report and query screenshots
