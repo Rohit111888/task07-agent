@@ -26,7 +26,7 @@ Parameters:
 
   ImageUri:
     Type: String
-    Default: 654999855057.dkr.ecr.us-east-1.amazonaws.com/task07-agent:v1.0.6
+    Default: 654999855057.dkr.ecr.us-east-1.amazonaws.com/task07-agent:v1.0.8
     Description: Complete Amazon ECR image URI including the image tag
 
   AnthropicSecretArn:

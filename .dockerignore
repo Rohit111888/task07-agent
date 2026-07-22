@@ -9,7 +9,7 @@ app/.env
 .git/
 .github/
 
-Screenshorts/
+Screenshots/
 screenshots/
 *.png
 *.jpg
