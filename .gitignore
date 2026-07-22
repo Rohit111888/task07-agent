@@ -7,3 +7,8 @@ __pycache__/
 Screenshorts/
 
 .Rhistory
+.pytest_cache/
+__pycache__/
+*.pyc
+TASK_7.pdf
+queries/
