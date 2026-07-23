@@ -1,0 +1,14 @@
+﻿{
+  "request_id": "task09-failure-demo-001",
+  "question": "Run the controlled Task 09 agent failure-path demonstration.",
+  "simulate_agent_failure": true,
+  "vehicles": [
+    {
+      "make": "Tesla",
+      "model": "Model S Plaid",
+      "year": 2025,
+      "horsepower": 1020,
+      "fuel_type": "Electric"
+    }
+  ]
+}

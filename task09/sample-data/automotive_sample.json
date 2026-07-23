@@ -1,0 +1,27 @@
+{
+  "request_id": "task09-demo-001",
+  "question": "Analyze this automotive dataset, identify the vehicle with the highest horsepower, and summarize the key differences.",
+  "vehicles": [
+    {
+      "make": "Ferrari",
+      "model": "296 GTB",
+      "year": 2025,
+      "horsepower": 819,
+      "fuel_type": "Hybrid"
+    },
+    {
+      "make": "Tesla",
+      "model": "Model S Plaid",
+      "year": 2025,
+      "horsepower": 1020,
+      "fuel_type": "Electric"
+    },
+    {
+      "make": "Porsche",
+      "model": "911 Turbo S",
+      "year": 2025,
+      "horsepower": 640,
+      "fuel_type": "Gasoline"
+    }
+  ]
+}

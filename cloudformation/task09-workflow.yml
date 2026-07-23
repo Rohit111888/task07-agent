@@ -1,0 +1,697 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: >
+  Task 09 event-driven automotive workflow using S3, EventBridge,
+  Step Functions, Lambda, RDS PostgreSQL, SNS, and an SQS dead-letter queue.
+
+Parameters:
+  VpcId:
+    Type: AWS::EC2::VPC::Id
+    Description: Existing VPC containing the private application subnets.
+
+  PrivateSubnetOne:
+    Type: AWS::EC2::Subnet::Id
+    Description: First private subnet for RDS and the database Lambda.
+
+  PrivateSubnetTwo:
+    Type: AWS::EC2::Subnet::Id
+    Description: Second private subnet in a different Availability Zone.
+
+  AgentEndpoint:
+    Type: String
+    Default: https://testagent.cciplatform-ai.com/query
+    AllowedPattern: "^https://.*"
+    Description: Existing HTTPS automotive-agent query endpoint.
+
+  InputPrefix:
+    Type: String
+    Default: incoming/
+    Description: S3 key prefix monitored by EventBridge.
+
+  ArtifactBucket:
+    Type: String
+    Description: Existing S3 bucket containing the Lambda deployment packages.
+
+  InvokeAgentCodeKey:
+    Type: String
+    Default: task09/lambda/invoke-agent.zip
+    Description: S3 key for the Invoke Agent Lambda deployment package.
+
+  StoreResultCodeKey:
+    Type: String
+    Default: task09/lambda/store-result.zip
+    Description: S3 key for the Store Result Lambda deployment package.
+
+  NotificationEmail:
+    Type: String
+    Default: ""
+    Description: Optional email address for workflow success and failure notifications.
+
+  DatabaseName:
+    Type: String
+    Default: automotiveworkflow
+    AllowedPattern: "^[A-Za-z][A-Za-z0-9]*$"
+    Description: PostgreSQL database name.
+
+  DatabaseUsername:
+    Type: String
+    Default: task09admin
+    AllowedPattern: "^[A-Za-z][A-Za-z0-9_]*$"
+    NoEcho: true
+    Description: PostgreSQL master username stored in Secrets Manager.
+
+  DatabaseInstanceClass:
+    Type: String
+    Default: db.t3.micro
+    Description: RDS instance class used for the Task 09 demonstration.
+
+  EnableFailureTest:
+    Type: String
+    Default: "false"
+    AllowedValues:
+      - "true"
+      - "false"
+    Description: Enables controlled agent-call failure testing.
+
+Conditions:
+  HasNotificationEmail: !Not
+    - !Equals
+      - !Ref NotificationEmail
+      - ""
+
+Resources:
+  InputBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub "task09-automotive-input-${AWS::AccountId}-${AWS::Region}"
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: AES256
+      VersioningConfiguration:
+        Status: Enabled
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
+      NotificationConfiguration:
+        EventBridgeConfiguration:
+          EventBridgeEnabled: true
+      LifecycleConfiguration:
+        Rules:
+          - Id: DeleteIncompleteMultipartUploads
+            Status: Enabled
+            AbortIncompleteMultipartUpload:
+              DaysAfterInitiation: 7
+      Tags:
+        - Key: Project
+          Value: Task09
+        - Key: Purpose
+          Value: AutomotiveWorkflowInput
+
+  InputBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref InputBucket
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Sid: DenyInsecureTransport
+            Effect: Deny
+            Principal: "*"
+            Action: "s3:*"
+            Resource:
+              - !GetAtt InputBucket.Arn
+              - !Sub "${InputBucket.Arn}/*"
+            Condition:
+              Bool:
+                aws:SecureTransport: "false"
+
+  DatabaseSecret:
+    Type: AWS::SecretsManager::Secret
+    Properties:
+      Description: Task 09 PostgreSQL master credentials.
+      GenerateSecretString:
+        SecretStringTemplate: !Sub '{"username":"${DatabaseUsername}"}'
+        GenerateStringKey: password
+        PasswordLength: 32
+        ExcludePunctuation: true
+      Tags:
+        - Key: Project
+          Value: Task09
+
+  DatabaseLambdaSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Outbound network access for the Task 09 database Lambda.
+      VpcId: !Ref VpcId
+      Tags:
+        - Key: Name
+          Value: task09-database-lambda-sg
+        - Key: Project
+          Value: Task09
+
+  DatabaseSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Allows PostgreSQL traffic only from the database Lambda.
+      VpcId: !Ref VpcId
+      SecurityGroupIngress:
+        - Description: PostgreSQL from the Store Result Lambda
+          IpProtocol: tcp
+          FromPort: 5432
+          ToPort: 5432
+          SourceSecurityGroupId: !Ref DatabaseLambdaSecurityGroup
+      Tags:
+        - Key: Name
+          Value: task09-rds-sg
+        - Key: Project
+          Value: Task09
+
+  DatabaseSubnetGroup:
+    Type: AWS::RDS::DBSubnetGroup
+    Properties:
+      DBSubnetGroupDescription: Private subnet group for Task 09 PostgreSQL.
+      SubnetIds:
+        - !Ref PrivateSubnetOne
+        - !Ref PrivateSubnetTwo
+      Tags:
+        - Key: Name
+          Value: task09-rds-subnet-group
+        - Key: Project
+          Value: Task09
+
+  ResultsDatabase:
+    Type: AWS::RDS::DBInstance
+    DeletionPolicy: Delete
+    UpdateReplacePolicy: Delete
+    Properties:
+      DBInstanceIdentifier: task09-automotive-results
+      DBName: !Ref DatabaseName
+      DBInstanceClass: !Ref DatabaseInstanceClass
+      Engine: postgres
+      AllocatedStorage: 20
+      StorageType: gp3
+      StorageEncrypted: true
+      MasterUsername: !Sub "{{resolve:secretsmanager:${DatabaseSecret}:SecretString:username}}"
+      MasterUserPassword: !Sub "{{resolve:secretsmanager:${DatabaseSecret}:SecretString:password}}"
+      DBSubnetGroupName: !Ref DatabaseSubnetGroup
+      VPCSecurityGroups:
+        - !Ref DatabaseSecurityGroup
+      PubliclyAccessible: false
+      MultiAZ: false
+      BackupRetentionPeriod: 0
+      DeleteAutomatedBackups: true
+      AutoMinorVersionUpgrade: true
+      DeletionProtection: false
+      EnablePerformanceInsights: false
+      CopyTagsToSnapshot: true
+      Tags:
+        - Key: Name
+          Value: task09-automotive-results
+        - Key: Project
+          Value: Task09
+
+  InvokeAgentLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: /aws/lambda/task09-invoke-agent
+      RetentionInDays: 14
+
+  StoreResultLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: /aws/lambda/task09-store-result
+      RetentionInDays: 14
+
+  StateMachineLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: /aws/vendedlogs/states/task09-automotive-workflow
+      RetentionInDays: 14
+
+  InvokeAgentLambdaRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+            Action:
+              - sts:AssumeRole
+      ManagedPolicyArns:
+        - !Sub "arn:${AWS::Partition}:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+      Policies:
+        - PolicyName: ReadTask09InputObjects
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - s3:GetObject
+                  - s3:GetObjectVersion
+                Resource: !Sub "${InputBucket.Arn}/${InputPrefix}*"
+
+  StoreResultLambdaRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+            Action:
+              - sts:AssumeRole
+      ManagedPolicyArns:
+        - !Sub "arn:${AWS::Partition}:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+        - !Sub "arn:${AWS::Partition}:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole"
+      Policies:
+        - PolicyName: ReadTask09DatabaseSecret
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - secretsmanager:GetSecretValue
+                Resource: !Ref DatabaseSecret
+
+  InvokeAgentFunction:
+    Type: AWS::Lambda::Function
+    DependsOn:
+      - InvokeAgentLogGroup
+    Properties:
+      FunctionName: task09-invoke-agent
+      Description: Reads S3 automotive files and calls the existing ECS agent.
+      Runtime: python3.12
+      Architectures:
+        - x86_64
+      Handler: invoke_agent.lambda_handler
+      Role: !GetAtt InvokeAgentLambdaRole.Arn
+      Timeout: 120
+      MemorySize: 256
+
+      Code:
+        S3Bucket: !Ref ArtifactBucket
+        S3Key: !Ref InvokeAgentCodeKey
+      Environment:
+        Variables:
+          AGENT_ENDPOINT: !Ref AgentEndpoint
+          AGENT_TIMEOUT_SECONDS: "90"
+          INPUT_PREFIX: !Ref InputPrefix
+          MAX_INPUT_BYTES: "100000"
+          MAX_PROMPT_CHARACTERS: "30000"
+          ENABLE_FAILURE_TEST: !Ref EnableFailureTest
+      Tags:
+        - Key: Project
+          Value: Task09
+        - Key: State
+          Value: InvokeAgent
+
+  StoreResultFunction:
+    Type: AWS::Lambda::Function
+    DependsOn:
+      - StoreResultLogGroup
+      - ResultsDatabase
+    Properties:
+      FunctionName: task09-store-result
+      Description: Stores the automotive-agent response in PostgreSQL RDS.
+      Runtime: python3.12
+      Architectures:
+        - x86_64
+      Handler: store_result.lambda_handler
+      Role: !GetAtt StoreResultLambdaRole.Arn
+      Timeout: 60
+      MemorySize: 256
+
+      Code:
+        S3Bucket: !Ref ArtifactBucket
+        S3Key: !Ref StoreResultCodeKey
+      VpcConfig:
+        SecurityGroupIds:
+          - !Ref DatabaseLambdaSecurityGroup
+        SubnetIds:
+          - !Ref PrivateSubnetOne
+          - !Ref PrivateSubnetTwo
+      Environment:
+        Variables:
+          DB_SECRET_ARN: !Ref DatabaseSecret
+          DB_HOST: !GetAtt ResultsDatabase.Endpoint.Address
+          DB_PORT: !GetAtt ResultsDatabase.Endpoint.Port
+          DB_NAME: !Ref DatabaseName
+          RESULTS_TABLE: workflow_results
+      Tags:
+        - Key: Project
+          Value: Task09
+        - Key: State
+          Value: StoreResult
+
+  WorkflowDeadLetterQueue:
+    Type: AWS::SQS::Queue
+    Properties:
+      QueueName: task09-workflow-dlq
+      MessageRetentionPeriod: 1209600
+      VisibilityTimeout: 60
+      SqsManagedSseEnabled: true
+      Tags:
+        - Key: Project
+          Value: Task09
+        - Key: Purpose
+          Value: WorkflowFailures
+
+  WorkflowNotificationTopic:
+    Type: AWS::SNS::Topic
+    Properties:
+      TopicName: task09-workflow-notifications
+      DisplayName: Task09Workflow
+      Tags:
+        - Key: Project
+          Value: Task09
+
+  WorkflowEmailSubscription:
+    Type: AWS::SNS::Subscription
+    Condition: HasNotificationEmail
+    Properties:
+      TopicArn: !Ref WorkflowNotificationTopic
+      Protocol: email
+      Endpoint: !Ref NotificationEmail
+
+  StateMachineRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - states.amazonaws.com
+            Action:
+              - sts:AssumeRole
+      Policies:
+        - PolicyName: ExecuteTask09Workflow
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Sid: InvokeWorkflowFunctions
+                Effect: Allow
+                Action:
+                  - lambda:InvokeFunction
+                Resource:
+                  - !GetAtt InvokeAgentFunction.Arn
+                  - !GetAtt StoreResultFunction.Arn
+
+              - Sid: SendWorkflowFailuresToDLQ
+                Effect: Allow
+                Action:
+                  - sqs:SendMessage
+                Resource: !GetAtt WorkflowDeadLetterQueue.Arn
+
+              - Sid: PublishWorkflowNotifications
+                Effect: Allow
+                Action:
+                  - sns:Publish
+                Resource: !Ref WorkflowNotificationTopic
+
+              - Sid: WriteStepFunctionsLogs
+                Effect: Allow
+                Action:
+                  - logs:CreateLogDelivery
+                  - logs:GetLogDelivery
+                  - logs:UpdateLogDelivery
+                  - logs:DeleteLogDelivery
+                  - logs:ListLogDeliveries
+                  - logs:PutResourcePolicy
+                  - logs:DescribeResourcePolicies
+                  - logs:DescribeLogGroups
+                Resource: "*"
+
+              - Sid: WriteXRayTraces
+                Effect: Allow
+                Action:
+                  - xray:PutTraceSegments
+                  - xray:PutTelemetryRecords
+                  - xray:GetSamplingRules
+                  - xray:GetSamplingTargets
+                Resource: "*"
+
+  WorkflowStateMachine:
+    Type: AWS::StepFunctions::StateMachine
+    Properties:
+      StateMachineName: task09-automotive-workflow
+      StateMachineType: STANDARD
+      RoleArn: !GetAtt StateMachineRole.Arn
+      LoggingConfiguration:
+        Destinations:
+          - CloudWatchLogsLogGroup:
+              LogGroupArn: !GetAtt StateMachineLogGroup.Arn
+        IncludeExecutionData: true
+        Level: ALL
+      TracingConfiguration:
+        Enabled: true
+      DefinitionString:
+        !Sub
+          - |
+            {
+              "Comment": "Task 09 automated automotive-data processing workflow",
+              "StartAt": "Invoke Agent",
+              "States": {
+                "Invoke Agent": {
+                  "Type": "Task",
+                  "Resource": "arn:${AWS::Partition}:states:::lambda:invoke",
+                  "Parameters": {
+                    "FunctionName": "${InvokeAgentArn}",
+                    "Payload.$": "$"
+                  },
+                  "OutputPath": "$.Payload",
+                  "Retry": [
+                    {
+                      "ErrorEquals": [
+                        "States.ALL"
+                      ],
+                      "IntervalSeconds": 2,
+                      "BackoffRate": 2.0,
+                      "MaxAttempts": 2,
+                      "MaxDelaySeconds": 10,
+                      "JitterStrategy": "FULL"
+                    }
+                  ],
+                  "Catch": [
+                    {
+                      "ErrorEquals": [
+                        "States.ALL"
+                      ],
+                      "ResultPath": "$.workflow_error",
+                      "Next": "Send To DLQ"
+                    }
+                  ],
+                  "Next": "Store Result"
+                },
+                "Store Result": {
+                  "Type": "Task",
+                  "Resource": "arn:${AWS::Partition}:states:::lambda:invoke",
+                  "Parameters": {
+                    "FunctionName": "${StoreResultArn}",
+                    "Payload.$": "$"
+                  },
+                  "OutputPath": "$.Payload",
+                  "Retry": [
+                    {
+                      "ErrorEquals": [
+                        "States.ALL"
+                      ],
+                      "IntervalSeconds": 2,
+                      "BackoffRate": 2.0,
+                      "MaxAttempts": 2,
+                      "MaxDelaySeconds": 10,
+                      "JitterStrategy": "FULL"
+                    }
+                  ],
+                  "Catch": [
+                    {
+                      "ErrorEquals": [
+                        "States.ALL"
+                      ],
+                      "ResultPath": "$.workflow_error",
+                      "Next": "Send To DLQ"
+                    }
+                  ],
+                  "Next": "Notify"
+                },
+                "Notify": {
+                  "Type": "Task",
+                  "Resource": "arn:${AWS::Partition}:states:::sns:publish",
+                  "Parameters": {
+                    "TopicArn": "${NotificationTopicArn}",
+                    "Subject": "Task 09 workflow succeeded",
+                    "Message.$": "States.Format('Task 09 succeeded. Request ID: {}. Source: s3://{}/{}. RDS record ID: {}', $.request_id, $.source.bucket, $.source.key, $.database_record.id)"
+                  },
+                  "ResultPath": "$.notification",
+                  "Catch": [
+                    {
+                      "ErrorEquals": [
+                        "States.ALL"
+                      ],
+                      "ResultPath": "$.workflow_error",
+                      "Next": "Send To DLQ"
+                    }
+                  ],
+                  "End": true
+                },
+                "Send To DLQ": {
+                  "Type": "Task",
+                  "Resource": "arn:${AWS::Partition}:states:::sqs:sendMessage",
+                  "Parameters": {
+                    "QueueUrl": "${DeadLetterQueueUrl}",
+                    "MessageBody.$": "States.JsonToString($)"
+                  },
+                  "ResultPath": "$.dlq_result",
+                  "Next": "Failure Alert"
+                },
+                "Failure Alert": {
+                  "Type": "Task",
+                  "Resource": "arn:${AWS::Partition}:states:::sns:publish",
+                  "Parameters": {
+                    "TopicArn": "${NotificationTopicArn}",
+                    "Subject": "Task 09 workflow failed",
+                    "Message.$": "States.JsonToString($)"
+                  },
+                  "ResultPath": "$.failure_notification",
+                  "Next": "Workflow Failed"
+                },
+                "Workflow Failed": {
+                  "Type": "Fail",
+                  "Error": "Task09WorkflowFailed",
+                  "Cause": "The workflow failed and the event was sent to the SQS dead-letter queue."
+                }
+              }
+            }
+          - InvokeAgentArn: !GetAtt InvokeAgentFunction.Arn
+            StoreResultArn: !GetAtt StoreResultFunction.Arn
+            NotificationTopicArn: !Ref WorkflowNotificationTopic
+            DeadLetterQueueUrl: !Ref WorkflowDeadLetterQueue
+
+  EventBridgeStartExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - events.amazonaws.com
+            Action:
+              - sts:AssumeRole
+      Policies:
+        - PolicyName: StartTask09StateMachine
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - states:StartExecution
+                Resource: !Ref WorkflowStateMachine
+
+  S3ObjectCreatedRule:
+    Type: AWS::Events::Rule
+    Properties:
+      Name: task09-s3-object-created
+      Description: >
+        Starts Task 09 when a JSON or CSV file is uploaded under incoming/.
+      State: ENABLED
+      EventPattern:
+        source:
+          - aws.s3
+        detail-type:
+          - Object Created
+        detail:
+          bucket:
+            name:
+              - !Ref InputBucket
+          object:
+            key:
+              - wildcard: !Sub "${InputPrefix}*.json"
+              - wildcard: !Sub "${InputPrefix}*.csv"
+      Targets:
+        - Id: Task09StateMachine
+          Arn: !Ref WorkflowStateMachine
+          RoleArn: !GetAtt EventBridgeStartExecutionRole.Arn
+          DeadLetterConfig:
+            Arn: !GetAtt WorkflowDeadLetterQueue.Arn
+          RetryPolicy:
+            MaximumEventAgeInSeconds: 3600
+            MaximumRetryAttempts: 2
+
+  WorkflowDeadLetterQueuePolicy:
+    Type: AWS::SQS::QueuePolicy
+    Properties:
+      Queues:
+        - !Ref WorkflowDeadLetterQueue
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Sid: AllowEventBridgeDeliveryFailures
+            Effect: Allow
+            Principal:
+              Service:
+                - events.amazonaws.com
+            Action:
+              - sqs:SendMessage
+            Resource: !GetAtt WorkflowDeadLetterQueue.Arn
+            Condition:
+              ArnEquals:
+                aws:SourceArn: !GetAtt S3ObjectCreatedRule.Arn
+
+Outputs:
+  InputBucketName:
+    Description: Upload JSON or CSV files under the incoming/ prefix.
+    Value: !Ref InputBucket
+
+  InputPrefix:
+    Description: S3 prefix monitored by the EventBridge rule.
+    Value: !Ref InputPrefix
+
+  StateMachineArn:
+    Description: Task 09 Step Functions state machine ARN.
+    Value: !Ref WorkflowStateMachine
+
+  EventBridgeRuleName:
+    Description: EventBridge rule monitoring S3 Object Created events.
+    Value: !Ref S3ObjectCreatedRule
+
+  InvokeAgentFunctionName:
+    Description: Lambda function used by the Invoke Agent state.
+    Value: !Ref InvokeAgentFunction
+
+  StoreResultFunctionName:
+    Description: Lambda function used by the Store Result state.
+    Value: !Ref StoreResultFunction
+
+  ResultsDatabaseEndpoint:
+    Description: Private PostgreSQL RDS endpoint.
+    Value: !GetAtt ResultsDatabase.Endpoint.Address
+
+  ResultsDatabasePort:
+    Description: PostgreSQL RDS port.
+    Value: !GetAtt ResultsDatabase.Endpoint.Port
+
+  DatabaseSecretArn:
+    Description: Secrets Manager ARN containing the generated RDS credentials.
+    Value: !Ref DatabaseSecret
+
+  WorkflowNotificationTopicArn:
+    Description: SNS topic for success and failure notifications.
+    Value: !Ref WorkflowNotificationTopic
+
+  WorkflowDeadLetterQueueUrl:
+    Description: SQS dead-letter queue URL.
+    Value: !Ref WorkflowDeadLetterQueue
+
+  WorkflowDeadLetterQueueArn:
+    Description: SQS dead-letter queue ARN.
+    Value: !GetAtt WorkflowDeadLetterQueue.Arn
