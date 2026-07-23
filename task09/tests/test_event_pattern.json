@@ -1,0 +1,28 @@
+{
+  "version": "0",
+  "id": "11111111-2222-3333-4444-555555555555",
+  "detail-type": "Object Created",
+  "source": "aws.s3",
+  "account": "654999855057",
+  "time": "2026-07-23T17:30:00Z",
+  "region": "us-east-1",
+  "resources": [
+    "arn:aws:s3:::task09-automotive-input-654999855057-us-east-1"
+  ],
+  "detail": {
+    "version": "0",
+    "bucket": {
+      "name": "task09-automotive-input-654999855057-us-east-1"
+    },
+    "object": {
+      "key": "incoming/automotive_sample.json",
+      "size": 500,
+      "etag": "manual-event-pattern-test",
+      "sequencer": "001"
+    },
+    "request-id": "manual-test-request",
+    "requester": "654999855057",
+    "source-ip-address": "127.0.0.1",
+    "reason": "PutObject"
+  }
+}

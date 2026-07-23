@@ -1,0 +1,1 @@
+{"detail-type":["Object Created"],"source":["aws.s3"],"detail":{"bucket":{"name":["task09-automotive-input-654999855057-us-east-1"]},"object":{"key":[{"wildcard":"incoming/*.json"},{"wildcard":"incoming/*.csv"}]}}}

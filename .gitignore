@@ -12,3 +12,4 @@ __pycache__/
 *.pyc
 TASK_7.pdf
 queries/
+task09/build/
